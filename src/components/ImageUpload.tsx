@@ -1,8 +1,7 @@
 import { useState, useRef } from 'react'
-import { useMutation as useConvexMutation } from 'convex/react'
+import { useMutation as useConvexMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { UploadCloud, X, Image as ImageIcon } from 'lucide-react'
-import { getStorageUrl } from '../lib/storage'
 
 interface ImageDisplayProps {
   imageId: string
@@ -11,12 +10,15 @@ interface ImageDisplayProps {
 }
 
 function ImageDisplay({ imageId, index, onRemove }: ImageDisplayProps) {
+  const imageUrl = useQuery(api.storage.getUrl, { storageId: imageId })
+
   if (!imageId) return null
+  if (!imageUrl) return null
 
   return (
     <div className="relative group">
       <img
-        src={getStorageUrl(imageId)}
+        src={imageUrl}
         alt={`Upload ${index + 1}`}
         className="h-24 w-24 object-cover rounded-lg border"
       />
@@ -180,6 +182,7 @@ export function SingleImageUpload({
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const generateUploadUrl = useConvexMutation(api.storage.generateUploadUrl)
+  const imageUrl = useQuery(api.storage.getUrl, { storageId: imageId ?? '' })
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -228,10 +231,10 @@ export function SingleImageUpload({
 
   return (
     <div className={className}>
-      {imageId ? (
+      {imageId && imageUrl ? (
         <div className="relative group inline-block">
           <img
-            src={getStorageUrl(imageId)}
+            src={imageUrl}
             alt="Uploaded image"
             className="h-32 w-32 object-cover rounded-lg border"
           />

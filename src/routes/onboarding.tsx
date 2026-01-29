@@ -15,10 +15,10 @@ import {
   Check,
 } from 'lucide-react'
 import { SingleImageUpload } from '../components/ImageUpload'
+import { StorageImage } from '../components/StorageImage'
 import { Calendar } from '../components/ui/calendar'
 import { format } from 'date-fns'
 import { cn } from '../lib/utils'
-import { getStorageUrl } from '../lib/storage'
 
 export const Route = createFileRoute('/onboarding')({
   component: Onboarding,
@@ -253,8 +253,8 @@ function Onboarding() {
                     <div className="relative">
                       {avatarUrl ? (
                         <div className="relative group">
-                          <img
-                            src={getStorageUrl(avatarUrl)}
+                          <StorageImage
+                            storageId={avatarUrl}
                             alt="Avatar preview"
                             className="w-28 h-28 rounded-2xl object-cover border-4 border-primary/20 shadow-xl"
                           />

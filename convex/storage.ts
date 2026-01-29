@@ -18,6 +18,17 @@ export const getUrl = query({
 })
 
 export const serveImage = httpAction(async (ctx, request) => {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    })
+  }
+
   const { searchParams } = new URL(request.url)
   const storageId = searchParams.get('storageId')
 
@@ -34,6 +45,9 @@ export const serveImage = httpAction(async (ctx, request) => {
     headers: {
       'Content-Type': image.type || 'image/jpeg',
       'Cache-Control': 'public, max-age=31536000',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
     },
   })
 })
