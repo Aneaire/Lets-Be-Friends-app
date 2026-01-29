@@ -1,0 +1,14 @@
+{
+  "name": "philippine-locations",
+  "version": "1.0.0",
+  "description": "Philippine locations database with coordinates",
+  "main": "import-locations.js",
+  "scripts": {
+    "import": "node import-locations.js",
+    "coords": "node add-coordinates.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "latest-ph-address-thanks-to-anehan": "^1.0.7"
+  }
+}

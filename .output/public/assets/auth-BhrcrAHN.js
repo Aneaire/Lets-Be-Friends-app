@@ -1,0 +1,1 @@
+import{u as o,j as t,l as s}from"./index-5PltJSx_.js";function a(n){return function(i){const{isSignedIn:r,isLoaded:e}=o();return e?r?t.jsx(n,{...i}):(s({to:"/auth/sign-in"}),null):t.jsx("div",{children:"Loading..."})}}export{a as w};
