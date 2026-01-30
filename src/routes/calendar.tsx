@@ -21,45 +21,45 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
   }
 
   return (
-    <div className={cn('bg-card rounded-2xl shadow-sm', className)}>
-      <div className="p-8 space-y-6">
+    <div className={cn('bg-card rounded-2xl shadow-sm max-w-[420px] mx-auto', className)}>
+      <div className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">
               Calendar
             </h1>
-            <p className="text-base text-muted-foreground mt-1.5">
+            <p className="text-sm text-muted-foreground mt-1">
               Select a date to continue
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
               className={cn(
                 buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'rounded-full transition-colors hover:bg-primary/10 hover:text-primary'
+                'h-8 w-8 rounded-full transition-colors hover:bg-primary/10 hover:text-primary'
               )}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
-            <span className="text-lg font-semibold text-foreground min-w-[140px] text-center">
-              {format(currentMonth, 'MMMM yyyy')}
+            <span className="text-sm font-semibold text-foreground min-w-[100px] text-center">
+              {format(currentMonth, 'MMM yyyy')}
             </span>
             <button
               type="button"
               onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
               className={cn(
                 buttonVariants({ variant: 'ghost', size: 'icon' }),
-                'rounded-full transition-colors hover:bg-primary/10 hover:text-primary'
+                'h-8 w-8 rounded-full transition-colors hover:bg-primary/10 hover:text-primary'
               )}
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        <div className="bg-muted/50 rounded-xl p-6">
+        <div className="border rounded-xl overflow-hidden">
           <DayPicker
             month={currentMonth}
             selected={selected}
@@ -74,19 +74,19 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
             captionLayout="label"
             classNames={{
               months: 'flex flex-col',
-              month: 'space-y-4',
+              month: 'space-y-0',
               caption: 'hidden',
               nav: 'hidden',
               table: 'w-full border-collapse',
-              head_row: 'flex w-full gap-1',
-              head_cell: 'text-muted-foreground/70 text-[10px] font-medium text-center py-2 w-10 uppercase tracking-wider',
-              row: 'flex w-full gap-1 mt-1',
-              cell: 'text-center text-sm relative',
-              button: 'h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 hover:bg-muted/60',
-              day_today: 'bg-primary/10 text-primary font-semibold',
-              day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-md ring-2 ring-primary/20',
-              day_outside: 'text-muted-foreground/40 opacity-60 hover:opacity-80',
-              day_disabled: 'text-muted-foreground/30 opacity-50 cursor-not-allowed hover:bg-transparent hover:text-muted-foreground',
+              head_row: 'flex w-full border-b bg-muted/30',
+              head_cell: 'flex-1 text-muted-foreground/80 text-[11px] font-semibold text-center py-3 uppercase tracking-wider border-r last:border-r-0',
+              row: 'flex w-full border-b last:border-b-0',
+              cell: 'flex-1 text-sm relative border-r last:border-r-0',
+              button: 'w-full h-12 flex items-center justify-center text-sm font-medium transition-all duration-150 focus:outline-none focus:bg-muted/50 hover:bg-muted/40',
+              day_today: 'bg-primary/5 text-primary font-semibold',
+              day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground font-bold',
+              day_outside: 'text-muted-foreground/40 bg-muted/20',
+              day_disabled: 'text-muted-foreground/30 opacity-50 cursor-not-allowed hover:bg-transparent',
               day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
               day_hidden: 'invisible',
             }}
@@ -94,15 +94,15 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
         </div>
 
         {selected && (
-          <div className="bg-primary/5 rounded-xl p-5">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary text-primary-foreground rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                <CalendarIcon className="h-5 w-5" />
+          <div className="bg-primary/5 border border-primary/10 rounded-lg p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary text-primary-foreground rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                <CalendarIcon className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-muted-foreground mb-1">Selected date</p>
-                <p className="text-lg font-semibold text-foreground truncate">
-                  {format(selected, 'EEEE, MMMM d, yyyy')}
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-0.5">Selected</p>
+                <p className="text-sm font-semibold text-foreground truncate">
+                  {format(selected, 'EEEE, MMM d, yyyy')}
                 </p>
               </div>
             </div>
@@ -121,14 +121,11 @@ function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-3xl">
-        <Calendar
-          selected={date}
-          onSelect={setDate}
-          className="shadow-xl"
-        />
-      </div>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Calendar
+        selected={date}
+        onSelect={setDate}
+      />
     </div>
   )
 }
