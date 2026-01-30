@@ -21,7 +21,7 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
   }
 
   return (
-    <div className={cn('bg-card rounded-2xl shadow-sm max-w-[420px] mx-auto', className)}>
+    <div className={cn('bg-card rounded-2xl shadow-sm max-w-[520px] mx-auto', className)}>
       <div className="p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -74,14 +74,15 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
             classNames={{
               months: 'flex flex-col',
               month: 'space-y-0',
-              caption: 'sr-only',
+              caption: 'hidden',
+              caption_label: 'hidden',
               nav: 'hidden',
               table: 'w-full border-collapse',
               head_row: 'flex w-full border-b bg-muted/20',
               head_cell: 'flex-1 text-muted-foreground/70 text-xs font-medium text-center py-3 uppercase tracking-wider',
               row: 'flex w-full',
               cell: 'flex-1 text-sm relative border-r last:border-r-0 border-b last:border-b-0',
-              button: 'w-full h-14 flex items-center justify-center text-sm font-medium transition-all duration-150 focus:outline-none focus:bg-muted/50 hover:bg-muted/30',
+              button: 'w-full h-16 flex items-center justify-center text-base font-medium transition-all duration-150 focus:outline-none focus:bg-muted/50 hover:bg-muted/30',
               day_today: 'bg-primary/10 text-primary font-semibold',
               day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground font-bold shadow-inner',
               day_outside: 'text-muted-foreground/30 bg-muted/10',
