@@ -3,33 +3,13 @@ import { useState } from 'react'
 import { useQuery as useConvexQuery, useMutation as useConvexMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAuth } from '@clerk/clerk-react'
-import {
-  User,
-  Sparkles,
-  AtSign,
-  Camera,
-  Calendar as CalendarIcon,
-  FileText,
-  ArrowRight,
-  ArrowLeft,
-  Check,
-} from 'lucide-react'
 import { SingleImageUpload } from '../components/ImageUpload'
 import { StorageImage } from '../components/StorageImage'
-import { Calendar } from '../components/ui/calendar'
 import { format } from 'date-fns'
-import { cn } from '../lib/utils'
 
 export const Route = createFileRoute('/onboarding')({
   component: Onboarding,
 })
-
-const steps = [
-  { id: 1, title: 'Name', icon: User },
-  { id: 2, title: 'Username', icon: AtSign },
-  { id: 3, title: 'Birthday', icon: CalendarIcon },
-  { id: 4, title: 'Bio', icon: FileText },
-]
 
 function Onboarding() {
   const { userId: clerkUserId } = useAuth()
@@ -39,22 +19,27 @@ function Onboarding() {
 
   const [username, setUsername] = useState('')
   const [fullName, setFullName] = useState('')
-  const [birthday, setBirthday] = useState<Date | undefined>()
+  const [day, setDay] = useState('')
+  const [month, setMonth] = useState('')
+  const [year, setYear] = useState('')
   const [bio, setBio] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
-  const [step, setStep] = useState(1)
+
+  const getBirthday = () => {
+    if (day && month && year) {
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+    }
+    return undefined
+  }
 
   const updateUserProfile = useConvexMutation(api.users.updateUserProfile)
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-        <div className="animate-pulse text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-            <User className="h-8 w-8 text-primary" />
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center">
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -68,46 +53,30 @@ function Onboarding() {
 
   if (!currentUser || currentUser.clerkId !== clerkUserId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-        <div className="max-w-md text-center bg-card border rounded-2xl shadow-xl p-8">
-          <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-md text-center bg-card border rounded-lg p-8">
+          <h1 className="text-xl font-bold mb-2">Access Denied</h1>
           <p className="text-muted-foreground">You must be logged in to access this page.</p>
         </div>
       </div>
     )
   }
 
-  const handleNext = () => {
-    if (step === 1) {
-      if (!fullName.trim()) {
-        setError('Please enter your name')
-        return
-      }
-      setStep(2)
-    } else if (step === 2) {
-      if (!username.trim()) {
-        setError('Please enter a username')
-        return
-      }
-      setStep(3)
-    } else if (step === 3) {
-      if (!birthday) {
-        setError('Please select your birthday')
-        return
-      }
-      setStep(4)
-    }
-    setError('')
-  }
-
-  const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1)
-    }
-  }
-
   const handleSubmit = async () => {
+    const birthday = getBirthday()
+
+    if (!fullName.trim()) {
+      setError('Please enter your name')
+      return
+    }
+    if (!username.trim()) {
+      setError('Please enter a username')
+      return
+    }
+    if (!birthday) {
+      setError('Please select your birthday')
+      return
+    }
     if (!bio.trim()) {
       setError('Please enter a bio')
       return
@@ -122,7 +91,7 @@ function Onboarding() {
         username,
         fullName,
         bio,
-        birthday: birthday ? format(birthday, 'yyyy-MM-dd') : '',
+        birthday: format(birthday, 'yyyy-MM-dd'),
         avatarUrl,
         isOnboardingComplete: true,
       })
@@ -135,234 +104,148 @@ function Onboarding() {
     }
   }
 
-  const currentStepData = steps.find(s => s.id === step)
-  const CurrentIcon = currentStepData?.icon || User
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl">
-        <div className="bg-card/80 backdrop-blur-sm border rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-8 pb-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                  <Sparkles className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                    Create Your Profile
-                  </h1>
-                  <p className="text-sm text-muted-foreground">Step {step} of 4</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between gap-2">
-              {steps.map((s) => {
-                const StepIcon = s.icon
-                const isCompleted = s.id < step
-                const isCurrent = s.id === step
-                const isFuture = s.id > step
-
-                return (
-                  <div key={s.id} className="flex-1 flex items-center gap-2">
-                    <div className="flex-1 h-1 rounded-full bg-muted relative">
-                      <div
-                        className={cn(
-                          'absolute left-0 top-0 h-full rounded-full transition-all duration-500',
-                          isCompleted || isCurrent ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-muted'
-                        )}
-                        style={{ width: isCompleted ? '100%' : isCurrent ? '50%' : '0%' }}
-                      />
-                    </div>
-                    <div
-                      className={cn(
-                        'w-10 h-10 rounded-xl flex items-center justify-center shadow-md transition-all duration-500',
-                        isCompleted && 'bg-gradient-to-br from-primary to-secondary text-white',
-                        isCurrent && 'bg-gradient-to-br from-primary to-secondary text-white scale-110',
-                        isFuture && 'bg-muted text-muted-foreground'
-                      )}
-                    >
-                      {isCompleted ? <Check className="h-5 w-5" /> : <StepIcon className="h-5 w-5" />}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-xl">
+        <div className="bg-card border rounded-lg">
+          <div className="p-6 border-b">
+            <h1 className="text-2xl font-bold">Create Your Profile</h1>
+            <p className="text-sm text-muted-foreground mt-1">Fill in your details to get started</p>
           </div>
 
-          <div className="p-8 pt-6">
-            <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <div className="flex items-center gap-4 mb-6">
-                <div
-                  className={cn(
-                    'w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transition-all',
-                    'bg-gradient-to-br from-primary/20 to-secondary/20'
-                  )}
-                >
-                  <CurrentIcon className="h-8 w-8 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-2xl font-semibold mb-1">
-                    {currentStepData?.title || 'Step'}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    {step === 1 && 'Enter your full name to get started'}
-                    {step === 2 && 'Choose a unique username for your profile'}
-                    {step === 3 && 'Select your birthday to personalize your experience'}
-                    {step === 4 && 'Tell others a bit about yourself'}
-                  </p>
-                </div>
-              </div>
-
-              {step === 1 && (
-                <div className="space-y-4">
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                    </div>
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all text-lg font-medium"
-                      placeholder="John Doe"
-                      autoFocus
-                    />
-                  </div>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-6">
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                      <AtSign className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                    </div>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all text-lg font-medium"
-                      placeholder="username"
-                      autoFocus
-                    />
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="relative">
-                      {avatarUrl ? (
-                        <div className="relative group">
-                          <StorageImage
-                            storageId={avatarUrl}
-                            alt="Avatar preview"
-                            className="w-28 h-28 rounded-2xl object-cover border-4 border-primary/20 shadow-xl"
-                          />
-                          <button
-                            onClick={() => setAvatarUrl('')}
-                            className="absolute -top-2 -right-2 w-8 h-8 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-destructive/90 transition-colors"
-                          >
-                            <span className="text-lg font-bold">×</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-muted-foreground font-bold text-4xl border-4 border-dashed border-muted-foreground/30">
-                          {fullName.substring(0, 2).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium">
-                        <Camera className="h-4 w-4 text-primary" />
-                        <span>Profile Picture</span>
-                        <span className="text-muted-foreground text-xs">(Optional)</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Add a photo to help others recognize you
-                      </p>
-                      <SingleImageUpload
-                        defaultImage={avatarUrl}
-                        onImageChange={(imageId) => setAvatarUrl(imageId ?? '')}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
-                <div className="space-y-6">
-                  <Calendar
-                    selected={birthday}
-                    onSelect={setBirthday}
-                    disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
-                    className="bg-gradient-to-br from-background to-muted/20 p-6 rounded-2xl border-2"
-                  />
-                </div>
-              )}
-
-              {step === 4 && (
-                <div className="space-y-4">
-                  <div className="relative group">
-                    <div className="absolute top-4 left-4 pointer-events-none">
-                      <FileText className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                    </div>
-                    <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-0 focus:border-primary transition-all text-lg min-h-[200px] resize-none font-medium"
-                      placeholder="Tell us about yourself, your interests, what you're looking for..."
-                      autoFocus
-                    />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Write something interesting about yourself. This will be visible on your profile.
-                  </p>
-                </div>
-              )}
-            </div>
-
+          <div className="p-6 space-y-6">
             {error && (
-              <div className="mb-6 p-4 bg-destructive/10 border-2 border-destructive/20 rounded-xl animate-in fade-in slide-in-from-bottom-2">
-                <div className="flex items-center gap-2 text-sm text-destructive font-medium">
-                  <span>⚠️</span>
-                  <span>{error}</span>
-                </div>
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded text-sm text-destructive">
+                {error}
               </div>
             )}
 
-            <div className="flex gap-3">
-              {step > 1 && (
-                <button
-                  onClick={handleBack}
-                  className="flex-1 px-6 py-4 border-2 border-input rounded-xl font-medium hover:bg-accent hover:border-accent transition-all flex items-center justify-center gap-2 group"
-                >
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                  <span>Back</span>
-                </button>
-              )}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="John Doe"
+                />
+              </div>
 
-              {step < 4 ? (
-                <button
-                  onClick={handleNext}
-                  className="flex-1 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group shadow-lg"
-                >
-                  <span>Next</span>
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  disabled={isSaving}
-                  className="flex-1 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group shadow-lg"
-                >
-                  <Sparkles className="h-5 w-5" />
-                  <span>{isSaving ? 'Creating Profile...' : 'Complete Profile'}</span>
-                </button>
-              )}
+              <div>
+                <label className="block text-sm font-medium mb-2">Username</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="username"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
+                <div className="flex items-start gap-4">
+                  {avatarUrl ? (
+                    <div className="relative">
+                      <StorageImage
+                        storageId={avatarUrl}
+                        alt="Avatar preview"
+                        className="w-20 h-20 rounded object-cover border"
+                      />
+                      <button
+                        onClick={() => setAvatarUrl('')}
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-sm hover:bg-destructive/90"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 rounded bg-muted flex items-center justify-center text-muted-foreground font-bold text-xl">
+                      {fullName.substring(0, 2).toUpperCase() || '?'}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <SingleImageUpload
+                      defaultImage={avatarUrl}
+                      onImageChange={(imageId) => setAvatarUrl(imageId ?? '')}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Birthday</label>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <select
+                      value={month}
+                      onChange={(e) => setMonth(e.target.value)}
+                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="">Month</option>
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'long' })}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <select
+                      value={day}
+                      onChange={(e) => setDay(e.target.value)}
+                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="">Day</option>
+                      {Array.from({ length: 31 }, (_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <select
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    >
+                      <option value="">Year</option>
+                      {Array.from({ length: 100 }, (_, i) => {
+                        const y = new Date().getFullYear() - i
+                        return (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Bio</label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[120px] resize-none"
+                  placeholder="Tell us about yourself, your interests, what you're looking for..."
+                />
+              </div>
             </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={isSaving}
+              className="w-full bg-primary text-primary-foreground px-4 py-2 rounded font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSaving ? 'Creating Profile...' : 'Complete Profile'}
+            </button>
           </div>
 
-          <div className="bg-muted/30 px-8 py-4 border-t">
+          <div className="px-6 py-4 bg-muted/30 border-t">
             <p className="text-xs text-center text-muted-foreground">
               You can always update these details later in your profile settings
             </p>
