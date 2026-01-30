@@ -14,6 +14,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CreateServiceRouteImport } from './routes/create-service'
 import { Route as CreatePostRouteImport } from './routes/create-post'
+import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -49,6 +50,11 @@ const CreateServiceRoute = CreateServiceRouteImport.update({
 const CreatePostRoute = CreatePostRouteImport.update({
   id: '/create-post',
   path: '/create-post',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookingsRoute = BookingsRouteImport.update({
@@ -110,6 +116,7 @@ const ProfileUserIdSettingsRoute = ProfileUserIdSettingsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bookings': typeof BookingsRoute
+  '/calendar': typeof CalendarRoute
   '/create-post': typeof CreatePostRoute
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bookings': typeof BookingsRoute
+  '/calendar': typeof CalendarRoute
   '/create-post': typeof CreatePostRoute
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bookings': typeof BookingsRoute
+  '/calendar': typeof CalendarRoute
   '/create-post': typeof CreatePostRoute
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/bookings'
+    | '/calendar'
     | '/create-post'
     | '/create-service'
     | '/discover'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/bookings'
+    | '/calendar'
     | '/create-post'
     | '/create-service'
     | '/discover'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/bookings'
+    | '/calendar'
     | '/create-post'
     | '/create-service'
     | '/discover'
@@ -222,6 +234,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BookingsRoute: typeof BookingsRoute
+  CalendarRoute: typeof CalendarRoute
   CreatePostRoute: typeof CreatePostRoute
   CreateServiceRoute: typeof CreateServiceRoute
   DiscoverRoute: typeof DiscoverRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       path: '/create-post'
       fullPath: '/create-post'
       preLoaderRoute: typeof CreatePostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bookings': {
@@ -390,6 +410,7 @@ const ServiceServiceIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BookingsRoute: BookingsRoute,
+  CalendarRoute: CalendarRoute,
   CreatePostRoute: CreatePostRoute,
   CreateServiceRoute: CreateServiceRoute,
   DiscoverRoute: DiscoverRoute,
