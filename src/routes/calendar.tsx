@@ -59,7 +59,7 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
           </div>
         </div>
 
-        <div className="border rounded-xl overflow-hidden">
+        <div className="border rounded-xl overflow-hidden bg-card">
           <DayPicker
             month={currentMonth}
             selected={selected}
@@ -71,22 +71,21 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
             formatters={{
               formatWeekdayName: (date) => format(date, 'EEE'),
             }}
-            captionLayout="label"
             classNames={{
               months: 'flex flex-col',
               month: 'space-y-0',
-              caption: 'hidden',
+              caption: 'sr-only',
               nav: 'hidden',
               table: 'w-full border-collapse',
-              head_row: 'flex w-full border-b bg-muted/30',
-              head_cell: 'flex-1 text-muted-foreground/80 text-[11px] font-semibold text-center py-3 uppercase tracking-wider border-r last:border-r-0',
-              row: 'flex w-full border-b last:border-b-0',
-              cell: 'flex-1 text-sm relative border-r last:border-r-0',
-              button: 'w-full h-12 flex items-center justify-center text-sm font-medium transition-all duration-150 focus:outline-none focus:bg-muted/50 hover:bg-muted/40',
-              day_today: 'bg-primary/5 text-primary font-semibold',
-              day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground font-bold',
-              day_outside: 'text-muted-foreground/40 bg-muted/20',
-              day_disabled: 'text-muted-foreground/30 opacity-50 cursor-not-allowed hover:bg-transparent',
+              head_row: 'flex w-full border-b bg-muted/20',
+              head_cell: 'flex-1 text-muted-foreground/70 text-xs font-medium text-center py-3 uppercase tracking-wider',
+              row: 'flex w-full',
+              cell: 'flex-1 text-sm relative border-r last:border-r-0 border-b last:border-b-0',
+              button: 'w-full h-14 flex items-center justify-center text-sm font-medium transition-all duration-150 focus:outline-none focus:bg-muted/50 hover:bg-muted/30',
+              day_today: 'bg-primary/10 text-primary font-semibold',
+              day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground font-bold shadow-inner',
+              day_outside: 'text-muted-foreground/30 bg-muted/10',
+              day_disabled: 'text-muted-foreground/20 opacity-50 cursor-not-allowed hover:bg-transparent',
               day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
               day_hidden: 'invisible',
             }}
