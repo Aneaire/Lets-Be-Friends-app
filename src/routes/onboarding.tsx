@@ -161,9 +161,11 @@ function Onboarding() {
                       </button>
                     </div>
                   ) : (
-                    <div className="w-20 h-20 rounded bg-muted flex items-center justify-center text-muted-foreground font-bold text-xl">
-                      {fullName.substring(0, 2).toUpperCase() || '?'}
-                    </div>
+                    <img
+                      src="/profile-placeholder.svg"
+                      alt="Profile placeholder"
+                      className="w-20 h-20 rounded border"
+                    />
                   )}
                   <div className="flex-1">
                     <SingleImageUpload
