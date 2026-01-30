@@ -71,21 +71,22 @@ export function Calendar({ selected, onSelect, disabled, className }: CalendarPr
             formatters={{
               formatWeekdayName: (date) => format(date, 'EEE'),
             }}
+            captionLayout="label"
             classNames={{
-              months: 'flex flex-col gap-8',
-              month: 'flex flex-col gap-3',
+              months: 'flex flex-col',
+              month: 'space-y-4',
               caption: 'hidden',
               nav: 'hidden',
               table: 'w-full border-collapse',
               head_row: 'flex w-full gap-1',
-              head_cell: 'text-muted-foreground text-xs font-medium text-center py-2 w-10',
-              row: 'flex w-full gap-1',
+              head_cell: 'text-muted-foreground/70 text-[10px] font-medium text-center py-2 w-10 uppercase tracking-wider',
+              row: 'flex w-full gap-1 mt-1',
               cell: 'text-center text-sm relative',
-              button: 'h-10 w-10 rounded-lg flex items-center justify-center text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 hover:bg-muted/50',
+              button: 'h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 hover:bg-muted/60',
               day_today: 'bg-primary/10 text-primary font-semibold',
-              day_selected: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-md',
-              day_outside: 'text-muted-foreground opacity-40 hover:opacity-60',
-              day_disabled: 'text-muted-foreground opacity-30 cursor-not-allowed hover:bg-transparent hover:text-muted-foreground',
+              day_selected: 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-md ring-2 ring-primary/20',
+              day_outside: 'text-muted-foreground/40 opacity-60 hover:opacity-80',
+              day_disabled: 'text-muted-foreground/30 opacity-50 cursor-not-allowed hover:bg-transparent hover:text-muted-foreground',
               day_range_middle: 'aria-selected:bg-accent aria-selected:text-accent-foreground',
               day_hidden: 'invisible',
             }}
