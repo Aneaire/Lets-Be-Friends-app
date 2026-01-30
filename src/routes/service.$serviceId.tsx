@@ -201,17 +201,11 @@ function ServiceDetail() {
           <h2 className="text-lg font-semibold mb-4">About the Service Provider</h2>
           {owner ? (
             <div className="flex items-center gap-4">
-              {owner.avatarUrl ? (
-                <img
-                  src={owner.avatarUrl}
-                  alt={owner.fullName}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-2xl">
-                  {owner.fullName.substring(0, 2)}
-                </div>
-              )}
+              <img
+                src={owner.avatarUrl || "/profile-placeholder.svg"}
+                alt={owner.fullName}
+                className="w-16 h-16 rounded-full object-cover"
+              />
               <div className="flex-1">
                 <h3 className="font-semibold text-lg">{owner.fullName}</h3>
                 <p className="text-muted-foreground">

@@ -118,17 +118,11 @@ function PostCard({ post, onLike, onSave }: PostCardProps) {
       <div className="flex items-center gap-3 mb-4">
         {postAuthor ? (
           <>
-            {postAuthor.avatarUrl ? (
-              <img
-                src={postAuthor.avatarUrl}
-                alt={postAuthor.fullName}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-                {postAuthor.fullName.substring(0, 2)}
-              </div>
-            )}
+            <img
+              src={postAuthor.avatarUrl || "/profile-placeholder.svg"}
+              alt={postAuthor.fullName}
+              className="w-10 h-10 rounded-full object-cover"
+            />
             <div>
               <div className="font-semibold">{postAuthor.fullName}</div>
               <div className="text-sm text-muted-foreground">

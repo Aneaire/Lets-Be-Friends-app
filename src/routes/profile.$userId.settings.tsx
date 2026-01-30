@@ -90,17 +90,11 @@ function ProfileSettings() {
         <div className="bg-card border rounded-lg p-6 space-y-6">
           <div className="flex items-center gap-6">
             <div className="flex-shrink-0">
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="Avatar"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-3xl">
-                  {fullName.substring(0, 2)}
-                </div>
-              )}
+              <img
+                src={avatarUrl || "/profile-placeholder.svg"}
+                alt="Avatar"
+                className="w-24 h-24 rounded-full object-cover"
+              />
             </div>
 
             <div className="flex-1">

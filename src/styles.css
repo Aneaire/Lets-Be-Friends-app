@@ -1,33 +1,58 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: oklch(98% 0 0);
-  --color-foreground: oklch(15% 0 0);
-  --color-card: oklch(100% 0 0);
-  --color-card-foreground: oklch(15% 0 0);
-  --color-popover: oklch(100% 0 0);
-  --color-popover-foreground: oklch(15% 0 0);
-  --color-primary: oklch(47% 0.18 250);
-  --color-primary-foreground: oklch(98% 0 0);
-  --color-secondary: oklch(96% 0.01 250);
-  --color-secondary-foreground: oklch(15% 0 0);
-  --color-muted: oklch(96% 0.01 250);
-  --color-muted-foreground: oklch(45% 0.01 250);
-  --color-accent: oklch(96% 0.01 250);
-  --color-accent-foreground: oklch(15% 0 0);
-  --color-destructive: oklch(55% 0.22 25);
-  --color-destructive-foreground: oklch(98% 0 0);
-  --color-border: oklch(90% 0 0);
-  --color-input: oklch(90% 0 0);
-  --color-ring: oklch(47% 0.18 250);
+  --color-background: hsl(320, 9%, 20%);
+  --color-foreground: hsl(0, 14%, 93%);
+  --color-card: hsl(322, 9%, 24%);
+  --color-card-foreground: hsl(0, 14%, 93%);
+  --color-popover: hsl(322, 9%, 24%);
+  --color-popover-foreground: hsl(0, 14%, 93%);
+  --color-primary: hsl(204, 87%, 40%);
+  --color-primary-foreground: hsl(0, 14%, 93%);
+  --color-secondary: hsl(320, 47%, 54%);
+  --color-secondary-foreground: hsl(0, 14%, 93%);
+  --color-muted: #968691;
+  --color-muted-foreground: #968691;
+  --color-accent: hsl(204, 87%, 40%);
+  --color-accent-foreground: hsl(0, 14%, 93%);
+  --color-destructive: #bb3c53;
+  --color-destructive-foreground: hsl(0, 14%, 93%);
+  --color-border: hsl(240, 5%, 13%);
+  --color-input: hsl(322, 9%, 24%);
+  --color-ring: hsl(204, 87%, 40%);
   --radius: 0.5rem;
+  --font-sans: "Montserrat Alternates", sans-serif;
+  --font-display: "Itim", cursive;
+  --animate-gradient-shine: gradient-shine 3s linear infinite;
+}
+
+@keyframes gradient-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, hsl(320, 47%, 54%) 0%, rgb(34 197 94) 100%);
+}
+
+.bg-gradient-accent-hover {
+  background: linear-gradient(135deg, hsl(320, 50%, 45%) 0%, rgb(34 197 94) 100%);
+}
+
+.font-heading {
+  font-family: "Itim", cursive;
 }
 
 body {
   @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Montserrat Alternates", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--color-background);

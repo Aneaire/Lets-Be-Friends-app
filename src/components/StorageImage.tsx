@@ -13,7 +13,9 @@ export function StorageImage({ storageId, alt, className }: StorageImageProps) {
     storageId ? { storageId } : 'skip'
   )
 
-  if (!storageId || !imageUrl) return null
+  if (!storageId || !imageUrl) {
+    return <img src="/profile-placeholder.svg" alt={alt} className={className} />
+  }
 
   return <img src={imageUrl} alt={alt} className={className} />
 }

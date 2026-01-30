@@ -344,7 +344,7 @@ function Onboarding() {
               {step < 4 ? (
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-gradient-to-r from-primary to-secondary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2 group shadow-lg"
+                  className="flex-1 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:bg-primary/90 transition-all flex items-center justify-center gap-2 group shadow-lg"
                 >
                   <span>Next</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -353,7 +353,7 @@ function Onboarding() {
                 <button
                   onClick={handleSubmit}
                   disabled={isSaving}
-                  className="flex-1 bg-gradient-to-r from-primary to-secondary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group shadow-lg"
+                  className="flex-1 bg-primary text-primary-foreground px-6 py-4 rounded-xl font-medium hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group shadow-lg"
                 >
                   <Sparkles className="h-5 w-5" />
                   <span>{isSaving ? 'Creating Profile...' : 'Complete Profile'}</span>

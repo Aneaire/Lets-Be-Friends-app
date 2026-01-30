@@ -179,17 +179,11 @@ function PostDetail() {
             <div className="flex items-start justify-between mb-4">
               {postAuthor && (
                 <div className="flex items-center gap-3">
-                  {postAuthor.avatarUrl ? (
-                    <img
-                      src={postAuthor.avatarUrl}
-                      alt={postAuthor.fullName}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-xl">
-                      {postAuthor.fullName.substring(0, 2)}
-                    </div>
-                  )}
+                  <img
+                    src={postAuthor.avatarUrl || "/profile-placeholder.svg"}
+                    alt={postAuthor.fullName}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
                   <div>
                     <h3 className="font-semibold">{postAuthor.fullName}</h3>
                     <p className="text-sm text-muted-foreground">
@@ -279,17 +273,11 @@ function PostDetail() {
                 </div>
               )}
               <div className="flex gap-3">
-                {currentUser.avatarUrl ? (
-                  <img
-                    src={currentUser.avatarUrl}
-                    alt={currentUser.fullName}
-                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold flex-shrink-0">
-                    {currentUser.fullName.substring(0, 2)}
-                  </div>
-                )}
+                <img
+                  src={currentUser.avatarUrl || "/profile-placeholder.svg"}
+                  alt={currentUser.fullName}
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                />
                 <div className="flex-1">
                   <textarea
                     value={commentText}
@@ -376,17 +364,11 @@ function CommentItem({
     <div className="flex gap-3">
       {author ? (
         <>
-          {author.avatarUrl ? (
-            <img
-              src={author.avatarUrl}
-              alt={author.fullName}
-              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold flex-shrink-0">
-              {author.fullName.substring(0, 2)}
-            </div>
-          )}
+          <img
+            src={author.avatarUrl || "/profile-placeholder.svg"}
+            alt={author.fullName}
+            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+          />
           <div className="flex-1">
             <div className="bg-muted rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
@@ -470,17 +452,11 @@ function ReplyItem({ reply, onLike }: ReplyItemProps) {
     <div className="flex gap-3">
       {author ? (
         <>
-          {author.avatarUrl ? (
-            <img
-              src={author.avatarUrl}
-              alt={author.fullName}
-              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm">
-              {author.fullName.substring(0, 2)}
-            </div>
-          )}
+          <img
+            src={author.avatarUrl || "/profile-placeholder.svg"}
+            alt={author.fullName}
+            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+          />
           <div className="flex-1">
             <div className="bg-muted rounded-lg p-3">
               <div className="flex items-center gap-2 mb-2">

@@ -59,17 +59,11 @@ function Profile() {
         <div className="bg-card border rounded-lg p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-shrink-0">
-              {profileUser.avatarUrl ? (
-                <img
-                  src={profileUser.avatarUrl}
-                  alt={profileUser.fullName}
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-32 h-32 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-4xl">
-                  {profileUser.fullName.substring(0, 2)}
-                </div>
-              )}
+              <img
+                src={profileUser.avatarUrl || "/profile-placeholder.svg"}
+                alt={profileUser.fullName}
+                className="w-32 h-32 rounded-full object-cover"
+              />
             </div>
 
             <div className="flex-1">

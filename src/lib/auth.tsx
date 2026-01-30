@@ -9,7 +9,11 @@ export function withAuth<P extends object>(Component: ComponentType<P>) {
     const { isSignedIn, isLoaded } = useAuth()
 
     if (!isLoaded) {
-      return <div>Loading...</div>
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <img src="/screen-logo.svg" alt="Loading..." className="w-32 h-auto" />
+        </div>
+      )
     }
 
     if (!isSignedIn) {
@@ -29,7 +33,11 @@ export function withOnboardingComplete<P extends object>(Component: ComponentTyp
     const currentUser = useConvexQuery(api.users.getCurrentUser, { clerkId: userId ?? '' })
 
     if (!isLoaded) {
-      return <div>Loading...</div>
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <img src="/screen-logo.svg" alt="Loading..." className="w-32 h-auto" />
+        </div>
+      )
     }
 
     if (!isSignedIn) {
