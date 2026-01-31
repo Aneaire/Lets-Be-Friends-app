@@ -93,9 +93,9 @@ function Dashboard() {
           <p className="text-muted-foreground mb-8">
             A social marketplace platform for connecting people and building meaningful friendships
           </p>
-          <Link to="/auth/sign-in">
-            <Button size="lg">Sign In to Continue</Button>
-          </Link>
+            <Link to="/auth/sign-in">
+              <Button size="lg" variant="secondary">Sign In to Continue</Button>
+            </Link>
         </div>
       </SignedOut>
     </div>
@@ -114,7 +114,7 @@ function PostCard({ post, onLike, onSave }: PostCardProps) {
   const postAuthor = useConvexQuery(api.users.getUserById, { userId: post.userId })
 
   return (
-    <div className="bg-white border rounded-lg p-6">
+    <div className="bg-card border border-border rounded-lg p-6">
       <div className="flex items-center gap-3 mb-4">
         {postAuthor ? (
           <>
@@ -132,9 +132,11 @@ function PostCard({ post, onLike, onSave }: PostCardProps) {
           </>
         ) : (
           <>
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-              {post.userId.substring(0, 2)}
-            </div>
+            <img
+              src="/profile-placeholder.svg"
+              alt="User"
+              className="w-10 h-10 rounded-full object-cover"
+            />
             <div>
               <div className="font-semibold">Loading...</div>
             </div>

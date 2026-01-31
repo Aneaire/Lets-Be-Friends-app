@@ -8,7 +8,7 @@ export const Route = createFileRoute('/')({
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <SignedOut>
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           <div className="max-w-2xl text-center">
@@ -21,10 +21,10 @@ function LandingPage() {
             </p>
             <div className="flex gap-4 justify-center">
               <Link to="/auth/sign-up">
-                <Button size="lg">Get Started</Button>
+                <Button size="lg" variant="secondary">Get Started</Button>
               </Link>
               <Link to="/auth/sign-in">
-                <Button size="lg" variant="outline">Sign In</Button>
+                <Button size="lg" variant="ghost" className="hover:bg-primary hover:text-primary-foreground">Sign In</Button>
               </Link>
             </div>
           </div>
