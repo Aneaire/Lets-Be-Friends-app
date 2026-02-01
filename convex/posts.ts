@@ -25,6 +25,7 @@ export const createPost = mutation({
 export const listPosts = query({
   args: {
     limit: v.optional(v.number()),
+    userId: v.optional(v.id('users')),
   },
   handler: async (ctx, args) => {
     const posts = await ctx.db
@@ -33,7 +34,24 @@ export const listPosts = query({
       .order('desc')
       .take(args.limit ?? 20)
 
-    return posts
+    if (!args.userId) {
+      return posts.map((post) => ({ ...post, isLiked: false }))
+    }
+
+    const postsWithLikes = await Promise.all(
+      posts.map(async (post) => {
+        const like = await ctx.db
+          .query('likes')
+          .withIndex('by_user_post', (q) =>
+            q.eq('userId', args.userId!).eq('postId', post._id),
+          )
+          .first()
+
+        return { ...post, isLiked: like !== null }
+      }),
+    )
+
+    return postsWithLikes
   },
 })
 

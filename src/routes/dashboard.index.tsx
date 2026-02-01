@@ -5,9 +5,8 @@ import { Button } from '../components/ui/button'
 import { useQuery as useConvexQuery, useMutation as useConvexMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useConvexUserSync } from '../hooks/useConvexUserSync'
-import type { Doc } from '../../convex/_generated/dataModel'
 import { withOnboardingComplete } from '../lib/auth'
-import { getStorageUrl } from '../lib/storage'
+import { PostCard } from '../components/PostCard'
 
 export const Route = createFileRoute('/dashboard/')({
   component: withOnboardingComplete(Dashboard),
@@ -18,8 +17,8 @@ function Dashboard() {
   const { userId } = useAuth()
   useConvexUserSync()
 
-  const posts = useConvexQuery(api.posts.listPosts, {})
   const currentUser = useConvexQuery(api.users.getCurrentUser, { clerkId: userId ?? '' })
+  const posts = useConvexQuery(api.posts.listPosts, { userId: currentUser?._id })
 
   const createPost = useConvexMutation(api.posts.createPost)
   const toggleLike = useConvexMutation(api.posts.toggleLike)
@@ -98,73 +97,6 @@ function Dashboard() {
             </Link>
         </div>
       </SignedOut>
-    </div>
-  )
-}
-
-interface PostCardProps {
-  post: Doc<'posts'>
-  // eslint-disable-next-line no-unused-vars
-  onLike: (postId: string) => void
-  // eslint-disable-next-line no-unused-vars
-  onSave: (postId: string) => void
-}
-
-function PostCard({ post, onLike, onSave }: PostCardProps) {
-  const postAuthor = useConvexQuery(api.users.getUserById, { userId: post.userId })
-
-  return (
-    <div className="bg-card border border-border rounded-lg p-6">
-      <div className="flex items-center gap-3 mb-4">
-        {postAuthor ? (
-          <>
-            <img
-              src={postAuthor.avatarUrl || "/profile-placeholder.svg"}
-              alt={postAuthor.fullName}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <div className="font-semibold">{postAuthor.fullName}</div>
-              <div className="text-sm text-muted-foreground">
-                {postAuthor.username && `@${postAuthor.username}`}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <img
-              src="/profile-placeholder.svg"
-              alt="User"
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <div className="font-semibold">Loading...</div>
-            </div>
-          </>
-        )}
-      </div>
-
-      <p className="mb-4 whitespace-pre-wrap">{post.caption}</p>
-
-          {post.images.length > 0 && (
-            <div className="mb-4 grid gap-2">
-              {post.images.map((image: string, idx: number) => (
-                <img key={idx} src={getStorageUrl(image)} alt="" className="rounded-lg w-full" />
-              ))}
-            </div>
-          )}
-
-      <div className="flex items-center gap-4 pt-4 border-t">
-        <Button variant="ghost" size="sm" onClick={() => onLike(post._id)}>
-          {post.likesCount} {post.likesCount === 1 ? 'Like' : 'Likes'}
-        </Button>
-        <Button variant="ghost" size="sm">
-          {post.commentsCount} {post.commentsCount === 1 ? 'Comment' : 'Comments'}
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => onSave(post._id)}>
-          Save
-        </Button>
-      </div>
     </div>
   )
 }
