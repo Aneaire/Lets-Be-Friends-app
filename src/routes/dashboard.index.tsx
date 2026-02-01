@@ -7,6 +7,7 @@ import { api } from '../../convex/_generated/api'
 import { useConvexUserSync } from '../hooks/useConvexUserSync'
 import { withOnboardingComplete } from '../lib/auth'
 import { PostCard } from '../components/PostCard'
+import { PostCardSkeleton } from '../components/PostCardSkeleton'
 
 export const Route = createFileRoute('/dashboard/')({
   component: withOnboardingComplete(Dashboard),
@@ -72,7 +73,11 @@ function Dashboard() {
 
           <div className="space-y-6">
             {posts === undefined ? (
-              <div className="text-center py-12 text-muted-foreground">Loading posts...</div>
+              <div className="space-y-4">
+                <PostCardSkeleton />
+                <PostCardSkeleton />
+                <PostCardSkeleton />
+              </div>
             ) : posts.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 No posts yet. Be the first to share something!
