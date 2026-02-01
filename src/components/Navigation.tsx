@@ -16,7 +16,7 @@ export default function Navigation() {
     <nav className="border-b bg-background">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/">
-          <img src="/logo.svg" width={140} height={30} alt="Let's Be Friends" />
+          <img src="/logo-with-name.svg" width={140} height={30} alt="Let's Be Friends" />
         </Link>
 
         <div className="flex items-center gap-6">

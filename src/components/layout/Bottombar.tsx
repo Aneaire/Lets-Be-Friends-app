@@ -1,19 +1,28 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { useAuth } from '@clerk/clerk-react'
 import { Home, Search, MessageSquare, Bell, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default function Bottombar() {
   const location = useLocation()
+  const { userId } = useAuth()
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Home' },
     { href: '/discover', icon: Search, label: 'Discover' },
     { href: '/messages', icon: MessageSquare, label: 'Messages' },
     { href: '/notifications', icon: Bell, label: 'Notifications' },
-    { href: '/profile/me', icon: User, label: 'Profile' },
+    { href: userId ? `/profile/${userId}` : '/auth/sign-in', icon: User, label: 'Profile' },
   ]
 
   return (
-    <nav className="z-50 flex justify-between items-center w-full fixed left-0 bottom-0 rounded-t-[20px] bg-bgLight px-3 py-2 md:hidden border-t border-dark-1/10">
+    <nav
+      className={cn(
+        'z-50 flex justify-around items-center w-full fixed left-0 bottom-0',
+        'md:hidden border-t border-white/10 px-2 py-2 pb-safe'
+      )}
+      style={{ backgroundColor: 'hsl(320, 9%, 12%)' }}
+    >
       {navItems.map((item) => {
         const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/')
         const Icon = item.icon
@@ -21,18 +30,20 @@ export default function Bottombar() {
           <Link
             key={item.label}
             to={item.href}
-            className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-150 ${
-              isActive ? 'text-white' : 'text-content'
-            }`}
-            style={{
-              backgroundColor: isActive ? 'hsl(var(--color-accent1))' : 'transparent',
-            }}
+            className={cn(
+              'flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-[64px]',
+              isActive
+                ? 'text-white bg-white/10'
+                : 'text-muted hover:text-white'
+            )}
           >
             <Icon
-              size={20}
+              className={cn(
+                'w-5 h-5',
+                isActive && 'text-primary'
+              )}
               style={{
-                fill: isActive ? 'white' : 'hsl(var(--color-accent1))',
-                transition: 'fill 0.15s'
+                color: isActive ? 'hsl(var(--color-primary))' : undefined,
               }}
             />
             <span className="text-xs font-medium">{item.label}</span>
