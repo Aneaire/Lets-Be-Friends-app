@@ -4,6 +4,7 @@ import type { Doc } from '../../convex/_generated/dataModel'
 import { getStorageUrl } from '../lib/storage'
 import { Button } from './ui/button'
 import { Heart } from 'lucide-react'
+import { StorageImage } from './StorageImage'
 
 interface PostCardProps {
   post: Doc<'posts'> & { isLiked?: boolean }
@@ -21,8 +22,8 @@ export function PostCard({ post, onLike, onSave }: PostCardProps) {
       <div className="flex items-center gap-3 mb-4">
         {postAuthor ? (
           <>
-            <img
-              src={postAuthor.avatarUrl ? getStorageUrl(postAuthor.avatarUrl) : '/profile-placeholder.svg'}
+            <StorageImage
+              storageId={postAuthor.avatarUrl}
               alt={postAuthor.fullName}
               className="w-10 h-10 rounded-full object-cover"
             />
