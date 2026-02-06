@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useQuery as useConvexQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { withOnboardingComplete } from '../lib/auth'
-import { Search, Filter, MapPin, Briefcase } from 'lucide-react'
+import { Search, SlidersHorizontal, MapPin, Briefcase, Heart, MessageCircle, Compass } from 'lucide-react'
 
 export const Route = createFileRoute('/discover')({
   component: withOnboardingComplete(Discover),
@@ -74,27 +74,32 @@ function Discover() {
     filteredResults.services.length
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Discover</h1>
+    <div className="min-h-screen bg-gradient-earth">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 py-8">
+        {/* Header */}
+        <div className="mb-8 animate-fade-up" style={{ animationFillMode: 'both' }}>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Discover</h1>
+          <p className="text-muted-foreground text-sm mt-1">Find people, posts, and services near you</p>
+        </div>
 
-        <div className="bg-card border rounded-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
+        {/* Search & Filters */}
+        <div className="card-elevated rounded-2xl p-5 mb-8 animate-fade-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+          <div className="flex flex-col md:flex-row gap-3 mb-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search posts or services..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm w-full pl-10"
               />
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2.5">
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
+              <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
               <select
                 value={filterType}
                 onChange={(e) =>
@@ -102,7 +107,7 @@ function Discover() {
                     e.target.value as typeof filterType
                   )
                 }
-                className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm text-sm py-2"
               >
                 <option value="all">All</option>
                 <option value="posts">Posts</option>
@@ -115,7 +120,7 @@ function Discover() {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="input-warm text-sm py-2"
                 >
                   <option value="">All Categories</option>
                   {uniqueCategories.map((cat) => (
@@ -128,7 +133,7 @@ function Discover() {
                 <select
                   value={province}
                   onChange={(e) => setProvince(e.target.value)}
-                  className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="input-warm text-sm py-2"
                 >
                   <option value="">All Provinces</option>
                   {commonProvinces.map((prov) => (
@@ -143,16 +148,17 @@ function Discover() {
         </div>
 
         {searchTerm || category || province ? (
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground text-sm mb-5 font-medium">
             Found {totalResults} result{totalResults !== 1 ? 's' : ''}
           </p>
         ) : null}
 
-        <div className="space-y-8">
+        <div className="space-y-10">
+          {/* Posts Section */}
           {filteredResults.posts.length > 0 &&
             (filterType === 'all' || filterType === 'posts') && (
-              <section>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <section className="animate-fade-up" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+                <h2 className="font-heading text-xl font-bold mb-4 text-foreground">
                   Posts ({filteredResults.posts.length})
                 </h2>
                 <div className="grid gap-4">
@@ -161,27 +167,33 @@ function Discover() {
                       key={post._id}
                       to="/post/$postId"
                       params={{ postId: post._id as string }}
-                      className="bg-card border rounded-lg p-6 hover:border-primary/50 transition-colors cursor-pointer block"
+                      className="card-elevated rounded-2xl p-5 block group"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
-                            {post.userId.substring(0, 2)}
+                          <div className="w-10 h-10 rounded-full bg-gradient-pink flex items-center justify-center text-white font-semibold text-sm">
+                            {post.userId.substring(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <div className="font-semibold">User</div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="font-semibold text-sm text-foreground">User</div>
+                            <div className="text-xs text-muted-foreground">
                               {new Date(post.createdAt).toLocaleDateString()}
                             </div>
                           </div>
                         </div>
                       </div>
-                      <p className="mb-4 whitespace-pre-wrap">
+                      <p className="mb-3 whitespace-pre-wrap text-foreground/90 text-[15px] leading-relaxed">
                         {post.caption}
                       </p>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>{post.likesCount} Likes</span>
-                        <span>{post.commentsCount} Comments</span>
+                      <div className="flex items-center gap-5 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <Heart className="w-4 h-4" />
+                          {post.likesCount}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <MessageCircle className="w-4 h-4" />
+                          {post.commentsCount}
+                        </span>
                       </div>
                     </Link>
                   ))}
@@ -189,11 +201,12 @@ function Discover() {
               </section>
             )}
 
+          {/* Services Section */}
           {filteredResults.services.length > 0 &&
             (filterType === 'all' || filterType === 'services') && (
-              <section>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <Briefcase className="h-5 w-5" />
+              <section className="animate-fade-up" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
+                  <Briefcase className="h-5 w-5 text-secondary" />
                   Services ({filteredResults.services.length})
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -202,26 +215,28 @@ function Discover() {
                       key={service._id}
                       to="/service/$serviceId"
                       params={{ serviceId: service._id as string }}
-                      className="bg-card border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer block"
+                      className="card-elevated rounded-2xl p-5 block group"
                     >
-                      <h3 className="font-semibold mb-2">
-                        {service.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">
-                          ₱{service.pricePerHour}/hr
-                        </span>
-                        <span className="text-muted-foreground">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xs font-medium text-secondary bg-secondary/10 px-2.5 py-1 rounded-full">
                           {service.category}
                         </span>
                       </div>
-                      <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4" />
-                        <span className="truncate">
-                          {service.location}
+                      <h3 className="font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                        {service.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="font-heading font-bold text-primary text-lg">
+                          ₱{service.pricePerHour}<span className="text-xs text-muted-foreground font-normal">/hr</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5" />
+                          <span className="truncate max-w-[120px]">
+                            {service.location}
+                          </span>
                         </span>
                       </div>
                     </Link>
@@ -231,14 +246,22 @@ function Discover() {
             )}
 
           {totalResults === 0 && (searchTerm || category || province) && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>No results found. Try adjusting your search or filters.</p>
+            <div className="card-warm rounded-2xl p-12 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-muted/20 flex items-center justify-center mx-auto mb-4">
+                <Search className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground font-medium">No results found</p>
+              <p className="text-sm text-muted-foreground/70 mt-1">Try adjusting your search or filters</p>
             </div>
           )}
 
           {!searchTerm && !category && !province && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>Use the search bar and filters to discover content</p>
+            <div className="card-warm rounded-2xl p-12 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-4">
+                <Compass className="w-7 h-7 text-primary" />
+              </div>
+              <p className="text-muted-foreground font-medium">Start exploring</p>
+              <p className="text-sm text-muted-foreground/70 mt-1">Use the search bar and filters to discover content</p>
             </div>
           )}
         </div>

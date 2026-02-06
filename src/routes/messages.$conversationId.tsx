@@ -87,34 +87,40 @@ function Chat() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 h-[calc(100vh-2rem)]">
-      <div className="max-w-4xl mx-auto h-full flex flex-col">
-        <div className="mb-4 border-b pb-4 flex items-center gap-4">
-          <Link to="/messages" className="p-2 hover:bg-muted rounded-md">
-            <ArrowLeft className="h-5 w-5" />
+    <div className="h-[calc(100vh-2rem)] flex flex-col">
+      <div className="max-w-4xl mx-auto w-full h-full flex flex-col px-4 md:px-6 py-4">
+        {/* Header */}
+        <div className="card-elevated rounded-2xl px-4 py-3 mb-4 flex items-center gap-3 animate-fade-in">
+          <Link to="/messages" className="p-2 hover:bg-foreground/5 rounded-xl transition-colors">
+            <ArrowLeft className="h-5 w-5 text-foreground" />
           </Link>
 
+          <div className="w-9 h-9 rounded-xl bg-gradient-pink flex items-center justify-center text-white font-semibold text-xs">
+            {otherParticipantId?.substring(0, 2).toUpperCase() ?? '??'}
+          </div>
+
           <div className="flex-1">
-            <h2 className="text-xl font-semibold">
+            <h2 className="font-semibold text-sm text-foreground">
               {otherParticipantId ? `User ${otherParticipantId.substring(0, 8)}` : 'Unknown'}
             </h2>
           </div>
 
-          <button className="p-2 hover:bg-muted rounded-md">
+          <button className="p-2 hover:bg-foreground/5 rounded-xl transition-colors">
             <MoreVertical className="h-5 w-5 text-muted-foreground" />
           </button>
         </div>
 
+        {/* Messages Area */}
         <div
           ref={messagesEndRef}
-          className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2"
+          className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1"
         >
           {!conversation || !messages ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-8 text-muted-foreground text-sm">
               Loading conversation...
             </div>
           ) : messages && messages.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-8 text-muted-foreground text-sm">
               No messages yet. Say hello!
             </div>
           ) : (
@@ -122,28 +128,29 @@ function Chat() {
           )}
         </div>
 
-        <div className="border-t pt-4 space-y-3">
+        {/* Composer */}
+        <div className="card-elevated rounded-2xl p-3 space-y-2">
           {attachedImages.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap px-1">
               {attachedImages.map((img, idx) => (
                 <div key={idx} className="relative group">
                   <img
                     src={img}
                     alt="Upload preview"
-                    className="h-16 w-16 object-cover rounded-md"
+                    className="h-14 w-14 object-cover rounded-xl"
                   />
                   <button
                     onClick={() => setAttachedImages(attachedImages.filter((_, i) => i !== idx))}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute -top-1.5 -right-1.5 bg-destructive text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    ×
+                    x
                   </button>
                 </div>
               ))}
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-end">
             <input
               type="file"
               ref={fileInputRef}
@@ -154,7 +161,7 @@ function Chat() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 hover:bg-muted rounded-md"
+              className="p-2.5 hover:bg-foreground/5 rounded-xl transition-colors flex-shrink-0"
               title="Attach images"
             >
               <Paperclip className="h-5 w-5 text-muted-foreground" />
@@ -166,16 +173,15 @@ function Chat() {
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
-              className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm flex-1 text-sm"
             />
 
             <button
               onClick={handleSendMessage}
               disabled={!newMessage.trim() && attachedImages.length === 0}
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="p-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 active:scale-95"
             >
-              <Send className="h-4 w-4" />
-              Send
+              <Send className="h-4.5 w-4.5" />
             </button>
           </div>
         </div>
@@ -204,7 +210,7 @@ function ChatMessages({ messages, currentUserId }: ChatMessagesProps) {
       {Object.entries(groupedMessages).map(([date, msgs]) => (
         <div key={date}>
           <div className="text-center mb-4">
-            <span className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">
+            <span className="bg-foreground/5 px-3 py-1 rounded-full text-xs text-muted-foreground font-medium">
               {new Date(date).toLocaleDateString([], {
                 weekday: 'long',
                 month: 'short',
@@ -213,7 +219,7 @@ function ChatMessages({ messages, currentUserId }: ChatMessagesProps) {
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {msgs.map((message: any) => (
               <MessageBubble
                 key={message._id}
@@ -239,10 +245,10 @@ function MessageBubble({ message, isOwn }: MessageBubbleProps) {
   return (
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[70%] rounded-lg p-3 ${
+        className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${
           isOwn
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-muted text-foreground'
+            ? 'bg-primary text-primary-foreground rounded-br-lg'
+            : 'bg-card border border-border text-foreground rounded-bl-lg'
         }`}
       >
         {message.images.length > 0 && (
@@ -252,18 +258,18 @@ function MessageBubble({ message, isOwn }: MessageBubbleProps) {
                 key={idx}
                 src={img}
                 alt="Message image"
-                className="rounded-md max-w-full"
+                className="rounded-xl max-w-full"
               />
             ))}
           </div>
         )}
 
         {message.content && (
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+          <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
         )}
 
-        <div className={`flex items-center gap-1 mt-1 text-xs ${
-          isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
+        <div className={`flex items-center gap-1 mt-1 text-[10px] ${
+          isOwn ? 'text-primary-foreground/60' : 'text-muted-foreground'
         }`}>
           {new Date(message.createdAt).toLocaleTimeString([], {
             hour: '2-digit',

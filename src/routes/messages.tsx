@@ -4,7 +4,7 @@ import { useQuery as useConvexQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { withOnboardingComplete } from '../lib/auth'
 import { useAuth } from '@clerk/clerk-react'
-import { MoreVertical, Trash2 } from 'lucide-react'
+import { MoreVertical, Trash2, MessageSquare } from 'lucide-react'
 import type { Doc } from '../../convex/_generated/dataModel'
 
 export const Route = createFileRoute('/messages')({
@@ -19,16 +19,22 @@ function Messages() {
   })
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Messages</h1>
+    <div className="min-h-screen bg-gradient-earth">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
+        <div className="mb-8 animate-fade-up" style={{ animationFillMode: 'both' }}>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Messages</h1>
+          <p className="text-muted-foreground text-sm mt-1">Your conversations</p>
+        </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5 animate-fade-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
           {!conversations || conversations.length === 0 ? (
-            <div className="bg-card border rounded-lg p-12 text-center">
-              <p className="text-muted-foreground">No conversations yet.</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Start a conversation from a profile or service page.
+            <div className="card-warm rounded-2xl p-12 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="w-7 h-7 text-primary" />
+              </div>
+              <p className="text-muted-foreground font-medium">No conversations yet</p>
+              <p className="text-sm text-muted-foreground/70 mt-1">
+                Start a conversation from a profile or service page
               </p>
             </div>
           ) : (
@@ -68,21 +74,21 @@ function ConversationItem({ conversation, currentUserId }: ConversationItemProps
     <Link
       to="/messages/$conversationId"
       params={{ conversationId: conversation._id as string }}
-      className="block bg-card border rounded-lg p-4 hover:border-primary/50 transition-colors relative"
+      className="card-elevated rounded-2xl p-4 block relative group"
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 flex items-start gap-3 min-w-0">
-          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold flex-shrink-0">
-            {otherParticipantId?.substring(0, 2) ?? '??'}
+          <div className="w-11 h-11 rounded-xl bg-gradient-pink flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm">
+            {otherParticipantId?.substring(0, 2).toUpperCase() ?? '??'}
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <h3 className="font-semibold truncate">
+            <div className="flex items-center justify-between mb-0.5">
+              <h3 className="font-semibold text-sm text-foreground truncate">
                 User {otherParticipantId?.substring(0, 8)}
               </h3>
               {lastMessageTime && (
-                <span className="text-xs text-muted-foreground flex-shrink-0">
+                <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
                   {lastMessageTime}
                 </span>
               )}
@@ -100,14 +106,14 @@ function ConversationItem({ conversation, currentUserId }: ConversationItemProps
               e.preventDefault()
               setShowActions(!showActions)
             }}
-            className="p-2 hover:bg-muted rounded-md"
+            className="p-2 hover:bg-foreground/5 rounded-xl transition-colors opacity-0 group-hover:opacity-100"
           >
             <MoreVertical className="h-4 w-4 text-muted-foreground" />
           </button>
 
           {showActions && (
-            <div className="absolute right-0 top-8 bg-card border rounded-md shadow-lg p-1 min-w-[120px] z-10">
-              <button className="w-full text-left px-3 py-2 text-sm hover:bg-muted rounded text-red-600 flex items-center gap-2">
+            <div className="absolute right-0 top-8 bg-card border border-border rounded-xl shadow-lg p-1 min-w-[120px] z-10">
+              <button className="w-full text-left px-3 py-2 text-sm hover:bg-foreground/5 rounded-lg text-destructive flex items-center gap-2">
                 <Trash2 className="h-4 w-4" />
                 Delete
               </button>

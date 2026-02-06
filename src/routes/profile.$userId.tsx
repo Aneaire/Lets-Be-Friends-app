@@ -45,122 +45,132 @@ function Profile() {
 
   if (!profileUser) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <p>Loading profile...</p>
+      <div className="min-h-screen bg-gradient-earth flex items-center justify-center">
+        <div className="card-elevated rounded-2xl p-8 text-center">
+          <div className="w-12 h-12 rounded-full bg-border/50 animate-shimmer mx-auto mb-3" />
+          <p className="text-muted-foreground text-sm">Loading profile...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-card border rounded-lg p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-shrink-0">
-              <img
-                src={profileUser.avatarUrl || "/profile-placeholder.svg"}
-                alt={profileUser.fullName}
-                className="w-32 h-32 rounded-full object-cover"
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-earth">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
+        {/* Profile Header Card */}
+        <div className="card-elevated rounded-2xl overflow-hidden mb-8 animate-fade-up" style={{ animationFillMode: 'both' }}>
+          {/* Cover gradient */}
+          <div className="h-32 bg-gradient-sunset relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+          </div>
 
-            <div className="flex-1">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h1 className="text-2xl font-bold">
-                      {profileUser.username || profileUser.fullName}
-                    </h1>
-                    {profileUser.isVerified && (
-                      <span className="bg-blue-500 text-white text-xs px-2 py-0.5 rounded-full">
-                        Verified
-                      </span>
-                    )}
+          <div className="px-6 pb-6 -mt-12 relative">
+            <div className="flex flex-col md:flex-row gap-5">
+              {/* Avatar */}
+              <div className="flex-shrink-0">
+                <img
+                  src={profileUser.avatarUrl || "/profile-placeholder.svg"}
+                  alt={profileUser.fullName}
+                  className="w-24 h-24 rounded-2xl object-cover ring-4 ring-white shadow-lg"
+                />
+              </div>
+
+              <div className="flex-1 pt-2 md:pt-6">
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-3">
+                  <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <h1 className="font-heading text-2xl font-bold text-foreground">
+                        {profileUser.username || profileUser.fullName}
+                      </h1>
+                      {profileUser.isVerified && (
+                        <span className="bg-secondary text-white text-xs px-2.5 py-0.5 rounded-full font-medium">
+                          Verified
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground text-sm">{profileUser.fullName}</p>
                   </div>
-                  <p className="text-muted-foreground">{profileUser.fullName}</p>
+
+                  {!isOwnProfile && currentUser && (
+                    <button
+                      onClick={handleFollowToggle}
+                      className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.97] ${
+                        isFollowing
+                          ? 'bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border'
+                          : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm shadow-primary/20'
+                      }`}
+                    >
+                      {isFollowing ? (
+                        <>
+                          <UserMinus className="h-4 w-4" />
+                          Unfollow
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus className="h-4 w-4" />
+                          Follow
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {isOwnProfile && (
+                    <Link
+                      to="/profile/$userId/settings"
+                      params={{ userId }}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border transition-all duration-200 active:scale-[0.97]"
+                    >
+                      <Settings className="h-4 w-4" />
+                      Edit Profile
+                    </Link>
+                  )}
                 </div>
 
-                {!isOwnProfile && currentUser && (
-                  <button
-                    onClick={handleFollowToggle}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${
-                      isFollowing
-                        ? 'bg-muted text-foreground hover:bg-muted/80'
-                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                    }`}
-                  >
-                    {isFollowing ? (
-                      <>
-                        <UserMinus className="h-4 w-4" />
-                        Unfollow
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="h-4 w-4" />
-                        Follow
-                      </>
-                    )}
-                  </button>
+                {profileUser.bio && (
+                  <p className="mb-4 whitespace-pre-wrap text-foreground/80 text-sm leading-relaxed">{profileUser.bio}</p>
                 )}
 
-                {isOwnProfile && (
-                  <Link
-                    to="/profile/$userId/settings"
-                    params={{ userId }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-md font-medium bg-muted text-foreground hover:bg-muted/80 transition-colors"
-                  >
-                    <Settings className="h-4 w-4" />
-                    Edit Profile
-                  </Link>
-                )}
-              </div>
-
-              {profileUser.bio && (
-                <p className="mb-4 whitespace-pre-wrap">{profileUser.bio}</p>
-              )}
-
-              <div className="flex flex-wrap gap-6 text-sm">
-                {followCount && (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className="font-semibold">{followCount.following}</span>
-                      <span className="text-muted-foreground">Following</span>
+                <div className="flex flex-wrap gap-5 text-sm">
+                  {followCount && (
+                    <>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-foreground">{followCount.following}</span>
+                        <span className="text-muted-foreground">Following</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-foreground">{followCount.followers}</span>
+                        <span className="text-muted-foreground">Followers</span>
+                      </div>
+                    </>
+                  )}
+                  {profileUser.location && (
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      <span>{profileUser.location}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <span className="font-semibold">{followCount.followers}</span>
-                      <span className="text-muted-foreground">Followers</span>
-                    </div>
-                  </>
-                )}
-                {profileUser.location && (
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span>{profileUser.location}</span>
+                  )}
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <span>Joined {new Date(profileUser.createdAt).toLocaleDateString()}</span>
                   </div>
-                )}
-              </div>
-
-              <div className="mt-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>Joined {new Date(profileUser.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div>
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        {/* Posts Section */}
+        <div className="animate-fade-up" style={{ animationDelay: '0.15s', animationFillMode: 'both' }}>
+          <h2 className="font-heading text-xl font-bold mb-4 text-foreground">
             Posts ({posts?.length ?? 0})
           </h2>
 
           {!posts || posts.length === 0 ? (
-            <div className="bg-card border rounded-lg p-12 text-center">
-              <UserIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">No posts yet.</p>
+            <div className="card-warm rounded-2xl p-12 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-muted/20 flex items-center justify-center mx-auto mb-4">
+                <UserIcon className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <p className="text-muted-foreground font-medium">No posts yet</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -184,23 +194,23 @@ function PostCard({ post }: PostCardProps) {
     <Link
       to="/post/$postId"
       params={{ postId: post._id as string }}
-      className="bg-card border rounded-lg overflow-hidden hover:border-primary/50 transition-colors cursor-pointer block"
+      className="card-elevated rounded-2xl overflow-hidden block group"
     >
       {post.images.length > 0 && (
         <img
           src={getStorageUrl(post.images[0])}
           alt="Post image"
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover group-hover:scale-[1.02] transition-transform duration-300"
         />
       )}
       <div className="p-4">
-        <p className="mb-3 line-clamp-2">{post.caption}</p>
+        <p className="mb-3 line-clamp-2 text-foreground/90 text-sm leading-relaxed">{post.caption}</p>
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <Heart className="h-4 w-4" />
             <span>{post.likesCount}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <MessageCircle className="h-4 w-4" />
             <span>{post.commentsCount}</span>
           </div>

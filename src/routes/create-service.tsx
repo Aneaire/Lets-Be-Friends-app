@@ -121,56 +121,59 @@ function CreateService() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-6">
+    <div className="min-h-screen bg-gradient-earth">
+      <div className="max-w-3xl mx-auto px-4 md:px-6 py-8">
+        <div className="mb-6 animate-fade-in">
           <button
             onClick={() => router.navigate({ to: '/discover' })}
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Discover
           </button>
         </div>
 
-        <h1 className="text-3xl font-bold mb-6">Create a Service</h1>
+        <div className="mb-8 animate-fade-up" style={{ animationFillMode: 'both' }}>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Create a Service</h1>
+          <p className="text-muted-foreground text-sm mt-1">Share your skills with the community</p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="bg-card border rounded-lg p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="card-elevated rounded-2xl p-6 space-y-6 animate-fade-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Service Title <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-foreground">
+              Service Title <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm w-full"
               placeholder="E.g., Professional Photography"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Description <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-foreground">
+              Description <span className="text-destructive">*</span>
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-h-[150px]"
+              className="input-warm w-full min-h-[150px] resize-none"
               placeholder="Describe your service in detail..."
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Category <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-foreground">
+              Category <span className="text-destructive">*</span>
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm w-full"
               required
             >
               <option value="">Select a category</option>
@@ -184,8 +187,8 @@ function CreateService() {
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Price per Hour (₱) <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2 text-foreground">
+                Price per Hour (₱) <span className="text-destructive">*</span>
               </label>
               <input
                 type="number"
@@ -193,21 +196,21 @@ function CreateService() {
                 onChange={(e) => setPricePerHour(e.target.value)}
                 min="0"
                 step="0.01"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm w-full"
                 placeholder="500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Location <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2 text-foreground">
+                Location <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm w-full"
                 placeholder="City, Province"
                 required
               />
@@ -215,20 +218,20 @@ function CreateService() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Tags</label>
+            <label className="block text-sm font-medium mb-2 text-foreground">Tags</label>
             <div className="flex gap-2 mb-3">
               <input
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm flex-1"
                 placeholder="Add a tag..."
               />
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-xl hover:bg-primary/90 transition-all active:scale-95"
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -237,13 +240,13 @@ function CreateService() {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                  className="bg-primary/8 text-primary px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    className="hover:text-red-500"
+                    className="hover:text-destructive transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -253,12 +256,12 @@ function CreateService() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Availability</label>
+            <label className="block text-sm font-medium mb-2 text-foreground">Availability</label>
             <div className="grid sm:grid-cols-3 gap-2 mb-3">
               <select
                 value={selectedDay}
                 onChange={(e) => setSelectedDay(e.target.value)}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm"
               >
                 <option value="">Select day</option>
                 {days.map((day) => (
@@ -271,20 +274,20 @@ function CreateService() {
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm"
               />
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm"
               />
             </div>
             <button
               type="button"
               onClick={handleAddAvailability}
               disabled={!selectedDay || !startTime || !endTime}
-              className="w-full sm:w-auto bg-muted px-4 py-2 rounded-md hover:bg-muted/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto bg-foreground/5 text-foreground px-4 py-2 rounded-xl hover:bg-foreground/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
             >
               <Plus className="h-4 w-4 inline mr-2" />
               Add Availability
@@ -293,13 +296,13 @@ function CreateService() {
               {availability.map((slot) => (
                 <span
                   key={slot}
-                  className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                  className="bg-secondary/10 text-secondary px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2"
                 >
                   {slot}
                   <button
                     type="button"
                     onClick={() => handleRemoveAvailability(slot)}
-                    className="hover:text-red-600"
+                    className="hover:text-destructive transition-colors"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -309,7 +312,7 @@ function CreateService() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Service Images</label>
+            <label className="block text-sm font-medium mb-2 text-foreground">Service Images</label>
             <ImageUpload
               maxImages={5}
               onImagesChange={setImages}
@@ -317,19 +320,19 @@ function CreateService() {
             />
           </div>
 
-          <div className="border-t pt-6">
+          <div className="border-t border-border pt-6">
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-primary text-primary-foreground px-5 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm shadow-primary/20 active:scale-[0.98]"
             >
               <Save className="h-4 w-4" />
               {isSaving ? 'Creating...' : 'Create Service'}
             </button>
 
             {saveMessage && (
-              <p className={`mt-2 text-sm text-center ${
-                saveMessage.includes('success') ? 'text-green-600' : 'text-red-600'
+              <p className={`mt-3 text-sm text-center font-medium ${
+                saveMessage.includes('success') ? 'text-secondary' : 'text-destructive'
               }`}>
                 {saveMessage}
               </p>

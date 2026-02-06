@@ -6,6 +6,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { SingleImageUpload } from '../components/ImageUpload'
 import { StorageImage } from '../components/StorageImage'
 import { format } from 'date-fns'
+import { Heart, Sparkles } from 'lucide-react'
 
 export const Route = createFileRoute('/onboarding')({
   component: Onboarding,
@@ -38,9 +39,9 @@ function Onboarding() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-earth flex items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground text-sm">Loading...</p>
         </div>
       </div>
     )
@@ -53,10 +54,10 @@ function Onboarding() {
 
   if (!currentUser || currentUser.clerkId !== clerkUserId) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="max-w-md text-center bg-card border rounded-lg p-8">
-          <h1 className="text-xl font-bold mb-2">Access Denied</h1>
-          <p className="text-muted-foreground">You must be logged in to access this page.</p>
+      <div className="min-h-screen bg-gradient-earth flex items-center justify-center p-4">
+        <div className="card-elevated rounded-2xl p-8 max-w-md text-center">
+          <h1 className="font-heading text-xl font-bold mb-2 text-foreground">Access Denied</h1>
+          <p className="text-muted-foreground text-sm">You must be logged in to access this page.</p>
         </div>
       </div>
     )
@@ -105,66 +106,77 @@ function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-xl">
-        <div className="bg-card border rounded-lg">
-          <div className="p-6 border-b">
-            <h1 className="text-2xl font-bold">Create Your Profile</h1>
-            <p className="text-sm text-muted-foreground mt-1">Fill in your details to get started</p>
-          </div>
+    <div className="min-h-screen bg-gradient-earth flex items-center justify-center p-4">
+      {/* Decorative blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute bottom-0 -left-32 w-80 h-80 rounded-full bg-secondary/5 blur-3xl" />
+      </div>
 
-          <div className="p-6 space-y-6">
+      <div className="w-full max-w-xl relative z-10 animate-fade-up" style={{ animationFillMode: 'both' }}>
+        {/* Logo header */}
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-pink flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20">
+            <Heart className="w-7 h-7 text-white fill-white/30" />
+          </div>
+          <h1 className="font-heading text-3xl font-bold text-foreground">Create Your Profile</h1>
+          <p className="text-muted-foreground text-sm mt-2">Tell us about yourself to get started</p>
+        </div>
+
+        <div className="card-elevated rounded-2xl overflow-hidden">
+          <div className="p-6 space-y-5">
             {error && (
-              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded text-sm text-destructive">
+              <div className="p-3 bg-destructive/8 border border-destructive/15 rounded-xl text-sm text-destructive flex items-center gap-2">
+                <Sparkles className="w-4 h-4 flex-shrink-0" />
                 {error}
               </div>
             )}
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
+                <label className="block text-sm font-medium mb-2 text-foreground">Full Name</label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="input-warm w-full"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Username</label>
+                <label className="block text-sm font-medium mb-2 text-foreground">Username</label>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="input-warm w-full"
                   placeholder="username"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
+                <label className="block text-sm font-medium mb-2 text-foreground">Profile Picture <span className="text-muted-foreground font-normal">(Optional)</span></label>
                 <div className="flex items-start gap-4">
                   {avatarUrl ? (
                     <div className="relative">
                       <StorageImage
                         storageId={avatarUrl}
                         alt="Avatar preview"
-                        className="w-20 h-20 rounded object-cover border"
+                        className="w-20 h-20 rounded-xl object-cover border border-border"
                       />
                       <button
                         onClick={() => setAvatarUrl('')}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-sm hover:bg-destructive/90"
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-sm hover:bg-destructive/90 transition-colors"
                       >
-                        ×
+                        x
                       </button>
                     </div>
                   ) : (
                     <img
                       src="/profile-placeholder.svg"
                       alt="Profile placeholder"
-                      className="w-20 h-20 rounded border"
+                      className="w-20 h-20 rounded-xl border border-border"
                     />
                   )}
                   <div className="flex-1">
@@ -177,13 +189,13 @@ function Onboarding() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Birthday</label>
+                <label className="block text-sm font-medium mb-2 text-foreground">Birthday</label>
                 <div className="flex gap-3">
                   <div className="flex-1">
                     <select
                       value={month}
                       onChange={(e) => setMonth(e.target.value)}
-                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="input-warm w-full"
                     >
                       <option value="">Month</option>
                       {Array.from({ length: 12 }, (_, i) => (
@@ -197,7 +209,7 @@ function Onboarding() {
                     <select
                       value={day}
                       onChange={(e) => setDay(e.target.value)}
-                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="input-warm w-full"
                     >
                       <option value="">Day</option>
                       {Array.from({ length: 31 }, (_, i) => (
@@ -211,7 +223,7 @@ function Onboarding() {
                     <select
                       value={year}
                       onChange={(e) => setYear(e.target.value)}
-                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="input-warm w-full"
                     >
                       <option value="">Year</option>
                       {Array.from({ length: 100 }, (_, i) => {
@@ -228,11 +240,11 @@ function Onboarding() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Bio</label>
+                <label className="block text-sm font-medium mb-2 text-foreground">Bio</label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[120px] resize-none"
+                  className="input-warm w-full min-h-[120px] resize-none"
                   placeholder="Tell us about yourself, your interests, what you're looking for..."
                 />
               </div>
@@ -241,13 +253,13 @@ function Onboarding() {
             <button
               onClick={handleSubmit}
               disabled={isSaving}
-              className="w-full bg-primary text-primary-foreground px-4 py-2 rounded font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-primary-foreground px-5 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm shadow-primary/20 active:scale-[0.98]"
             >
               {isSaving ? 'Creating Profile...' : 'Complete Profile'}
             </button>
           </div>
 
-          <div className="px-6 py-4 bg-muted/30 border-t">
+          <div className="px-6 py-4 bg-foreground/3 border-t border-border">
             <p className="text-xs text-center text-muted-foreground">
               You can always update these details later in your profile settings
             </p>

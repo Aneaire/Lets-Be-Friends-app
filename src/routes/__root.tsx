@@ -1,13 +1,11 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
-// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-// import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import LeftSidebar from '../components/layout/LeftSidebar'
 import Bottombar from '../components/layout/Bottombar'
 
 export const Route = createRootRoute({
   component: () => (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
       <LeftSidebar />
 
@@ -18,18 +16,6 @@ export const Route = createRootRoute({
 
       {/* Mobile Bottom Bar */}
       <Bottombar />
-
-      {/* <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      /> */}
     </div>
   ),
 })
