@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { calculateDistance } from './users'
 
 export const createPost = mutation({
   args: {
@@ -78,6 +79,42 @@ export const getPost = query({
     const post = await ctx.db.get(args.postId)
 
     return post
+  },
+})
+
+export const listPostsNearby = query({
+  args: {
+    lat: v.number(),
+    lng: v.number(),
+    radius: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const posts = await ctx.db
+      .query('posts')
+      .withIndex('by_created_at')
+      .order('desc')
+      .take(200)
+
+    const postsWithDistance = await Promise.all(
+      posts.map(async (post) => {
+        const author = await ctx.db.get(post.userId)
+        if (!author || !author.locationLat || !author.locationLng || !author.isLocationVisible) {
+          return null
+        }
+        const distance = calculateDistance(
+          args.lat,
+          args.lng,
+          author.locationLat,
+          author.locationLng,
+        )
+        if (distance > args.radius) return null
+        return { ...post, distance, authorName: author.fullName, authorAvatar: author.avatarUrl }
+      }),
+    )
+
+    return postsWithDistance
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+      .sort((a, b) => a.distance - b.distance)
   },
 })
 

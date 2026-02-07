@@ -99,8 +99,11 @@ export default defineSchema({
     totalPrice: v.number(),
     notes: v.optional(v.string()),
     status: v.string(),
+    paymentStatus: v.optional(v.string()),
     paymentLink: v.optional(v.string()),
     paymentId: v.optional(v.string()),
+    paymongoLinkId: v.optional(v.string()),
+    paidAt: v.optional(v.number()),
     receiptStart: v.optional(v.string()),
     receiptMiddle: v.optional(v.string()),
     receiptEnd: v.optional(v.string()),
@@ -110,7 +113,8 @@ export default defineSchema({
     .index('by_booker', ['bookerId'])
     .index('by_owner', ['ownerId'])
     .index('by_service', ['serviceId'])
-    .index('by_status', ['status']),
+    .index('by_status', ['status'])
+    .index('by_payment_status', ['paymentStatus']),
 
   conversations: defineTable({
     participants: v.array(v.id('users')),

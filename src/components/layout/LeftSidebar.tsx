@@ -1,21 +1,21 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { useAuth, UserButton, SignedIn } from '@clerk/clerk-react'
-import { Home, Search, MessageSquare, Bell, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, Search, Briefcase, MessageSquare, Bell, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { sidebarStore, toggleSidebar } from '@/store/sidebar'
 import { useStore } from '@tanstack/react-store'
+import { SidebarProfileMenu } from './SidebarProfileMenu'
 
 const EXPANDED_WIDTH = 256
 const COLLAPSED_WIDTH = 80
 
 export default function LeftSidebar() {
   const location = useLocation()
-  const { userId } = useAuth()
   const { isCollapsed } = useStore(sidebarStore)
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Home' },
     { href: '/discover', icon: Search, label: 'Discover' },
+    { href: '/services', icon: Briefcase, label: 'Services' },
     { href: '/bookings', icon: Calendar, label: 'Bookings' },
     { href: '/messages', icon: MessageSquare, label: 'Messages' },
     { href: '/notifications', icon: Bell, label: 'Notifications' },
@@ -80,35 +80,9 @@ export default function LeftSidebar() {
       </div>
 
       {/* Bottom Section - Profile */}
-      <SignedIn>
-        <div className={cn('p-4 border-t border-white/8', isCollapsed && 'px-3')}>
-          {userId && (
-            <Link
-              to="/profile/$userId"
-              params={{ userId: userId }}
-              className={cn(
-                'flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/6 transition-all duration-200',
-                isCollapsed && 'justify-center'
-              )}
-              title={isCollapsed ? 'Your Profile' : undefined}
-            >
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: isCollapsed ? 'w-10 h-10' : 'w-9 h-9',
-                  },
-                }}
-              />
-              {!isCollapsed && (
-                <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-medium text-white/90 truncate">Your Profile</span>
-                  <span className="text-xs text-white/40 truncate">View profile</span>
-                </div>
-              )}
-            </Link>
-          )}
-        </div>
-      </SignedIn>
+      <div className={cn('p-4 border-t border-white/8', isCollapsed && 'px-3')}>
+        <SidebarProfileMenu isCollapsed={isCollapsed} />
+      </div>
 
       {/* Toggle Button */}
       <button

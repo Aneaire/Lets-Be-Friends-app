@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { calculateDistance } from './users'
 
 interface Service {
   isActive: boolean
@@ -75,6 +76,41 @@ export const listServicesByUser = query({
       .collect()
 
     return services
+  },
+})
+
+export const listServicesNearby = query({
+  args: {
+    lat: v.number(),
+    lng: v.number(),
+    radius: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const services = await ctx.db
+      .query('services')
+      .filter((q) => q.eq(q.field('isActive'), true))
+      .collect()
+
+    const servicesWithDistance = await Promise.all(
+      services.map(async (service) => {
+        const owner = await ctx.db.get(service.userId)
+        if (!owner || !owner.locationLat || !owner.locationLng || !owner.isLocationVisible) {
+          return null
+        }
+        const distance = calculateDistance(
+          args.lat,
+          args.lng,
+          owner.locationLat,
+          owner.locationLng,
+        )
+        if (distance > args.radius) return null
+        return { ...service, distance, ownerName: owner.fullName, ownerAvatar: owner.avatarUrl }
+      }),
+    )
+
+    return servicesWithDistance
+      .filter((s): s is NonNullable<typeof s> => s !== null)
+      .sort((a, b) => a.distance - b.distance)
   },
 })
 

@@ -17,6 +17,7 @@ import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as ServiceServiceIdRouteImport } from './routes/service.$serviceId'
 import { Route as ProfileUserIdRouteImport } from './routes/profile.$userId'
@@ -65,6 +66,11 @@ const BookingsRoute = BookingsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
   '/service/$serviceId/edit': typeof ServiceServiceIdEditRoute
 }
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
   '/dashboard': typeof DashboardIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
   '/service/$serviceId/edit': typeof ServiceServiceIdEditRoute
 }
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
   '/service/$serviceId/edit': typeof ServiceServiceIdEditRoute
 }
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/profile/$userId'
     | '/service/$serviceId'
     | '/dashboard/'
+    | '/services/'
     | '/profile/$userId/settings'
     | '/service/$serviceId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/profile/$userId'
     | '/service/$serviceId'
     | '/dashboard'
+    | '/services'
     | '/profile/$userId/settings'
     | '/service/$serviceId/edit'
   id:
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/profile/$userId'
     | '/service/$serviceId'
     | '/dashboard/'
+    | '/services/'
     | '/profile/$userId/settings'
     | '/service/$serviceId/edit'
   fileRoutesById: FileRoutesById
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   ProfileUserIdRoute: typeof ProfileUserIdRouteWithChildren
   ServiceServiceIdRoute: typeof ServiceServiceIdRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileUserIdRoute: ProfileUserIdRouteWithChildren,
   ServiceServiceIdRoute: ServiceServiceIdRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -101,6 +101,30 @@ export const getUserById = query({
   },
 })
 
+export const updateUserLocation = mutation({
+  args: {
+    clerkId: v.string(),
+    locationLat: v.number(),
+    locationLng: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_clerk_id', (q) => q.eq('clerkId', args.clerkId))
+      .first()
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    await ctx.db.patch(user._id, {
+      locationLat: args.locationLat,
+      locationLng: args.locationLng,
+      updatedAt: Date.now(),
+    })
+  },
+})
+
 export const listUsersNearby = query({
   args: {
     lat: v.number(),
@@ -113,26 +137,30 @@ export const listUsersNearby = query({
       .withIndex('by_location')
       .collect()
 
-    const nearbyUsers = users.filter((user) => {
-      if (!user.locationLat || !user.locationLng || !user.isLocationVisible) {
-        return false
-      }
-
-      const distance = calculateDistance(
-        args.lat,
-        args.lng,
-        user.locationLat,
-        user.locationLng,
-      )
-
-      return distance <= args.radius
-    })
+    const nearbyUsers = users
+      .filter((user) => {
+        if (!user.locationLat || !user.locationLng || !user.isLocationVisible) {
+          return false
+        }
+        return true
+      })
+      .map((user) => {
+        const distance = calculateDistance(
+          args.lat,
+          args.lng,
+          user.locationLat!,
+          user.locationLng!,
+        )
+        return { ...user, distance }
+      })
+      .filter((user) => user.distance <= args.radius)
+      .sort((a, b) => a.distance - b.distance)
 
     return nearbyUsers
   },
 })
 
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLon = (lon2 - lon1) * Math.PI / 180

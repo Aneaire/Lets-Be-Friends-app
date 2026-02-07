@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery as useConvexQuery, useMutation as useConvexMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { useAuth } from '@clerk/clerk-react'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Check, MapPin, Eye, EyeOff } from 'lucide-react'
 import { SingleImageUpload } from '../components/ImageUpload'
 
 export const Route = createFileRoute('/profile/$userId/settings')({
@@ -15,25 +15,41 @@ function ProfileSettings() {
   const { userId: clerkUserId } = useAuth()
   const currentUser = useConvexQuery(api.users.getCurrentUser, { clerkId: clerkUserId ?? '' })
 
-  const [username, setUsername] = useState(currentUser?.username ?? '')
-  const [fullName, setFullName] = useState(currentUser?.fullName ?? '')
-  const [bio, setBio] = useState(currentUser?.bio ?? '')
-  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber ?? '')
-  const [birthday, setBirthday] = useState(currentUser?.birthday ?? '')
-  const [gender, setGender] = useState(currentUser?.gender ?? '')
-  const [location, setLocation] = useState(currentUser?.location ?? '')
-  const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatarUrl ?? '')
-  const [isLocationVisible, setIsLocationVisible] = useState(currentUser?.isLocationVisible ?? false)
+  const [username, setUsername] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [bio, setBio] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [birthday, setBirthday] = useState('')
+  const [gender, setGender] = useState('')
+  const [location, setLocation] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [isLocationVisible, setIsLocationVisible] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState('')
+  const [initialized, setInitialized] = useState(false)
 
   const updateUserProfile = useConvexMutation(api.users.updateUserProfile)
 
-  if (!currentUser || currentUser._id !== userId) {
+  useEffect(() => {
+    if (currentUser && !initialized) {
+      setUsername(currentUser.username ?? '')
+      setFullName(currentUser.fullName ?? '')
+      setBio(currentUser.bio ?? '')
+      setPhoneNumber(currentUser.phoneNumber ?? '')
+      setBirthday(currentUser.birthday ?? '')
+      setGender(currentUser.gender ?? '')
+      setLocation(currentUser.location ?? '')
+      setAvatarUrl(currentUser.avatarUrl ?? '')
+      setIsLocationVisible(currentUser.isLocationVisible ?? false)
+      setInitialized(true)
+    }
+  }, [currentUser, initialized])
+
+  if (!currentUser || (currentUser._id !== userId && currentUser.clerkId !== userId)) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <p>You can only edit your own profile.</p>
+      <div className="min-h-screen bg-gradient-earth flex items-center justify-center">
+        <div className="card-elevated rounded-2xl p-8 text-center">
+          <p className="text-muted-foreground">You can only edit your own profile.</p>
         </div>
       </div>
     )
@@ -60,11 +76,8 @@ function ProfileSettings() {
       })
 
       setSaveMessage('Profile updated successfully!')
-
-      setTimeout(() => {
-        setSaveMessage('')
-      }, 3000)
-    } catch (error) {
+      setTimeout(() => setSaveMessage(''), 3000)
+    } catch {
       setSaveMessage('Failed to update profile. Please try again.')
     } finally {
       setIsSaving(false)
@@ -72,33 +85,36 @@ function ProfileSettings() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-6">
+    <div className="min-h-screen bg-gradient-earth">
+      <div className="max-w-2xl mx-auto px-4 md:px-6 py-8">
+        {/* Back link */}
+        <div className="mb-6 animate-fade-up" style={{ animationFillMode: 'both' }}>
           <Link
             to="/profile/$userId"
             params={{ userId }}
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Profile
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
+        <h1 className="font-heading text-2xl font-bold text-foreground mb-6 animate-fade-up" style={{ animationDelay: '0.05s', animationFillMode: 'both' }}>
+          Edit Profile
+        </h1>
 
-        <div className="bg-card border rounded-lg p-6 space-y-6">
+        <div className="card-elevated rounded-2xl p-6 space-y-6 animate-fade-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+          {/* Avatar section */}
           <div className="flex items-center gap-6">
             <div className="flex-shrink-0">
               <img
-                src={avatarUrl || "/profile-placeholder.svg"}
+                src={avatarUrl || '/profile-placeholder.svg'}
                 alt="Avatar"
-                className="w-24 h-24 rounded-full object-cover"
+                className="w-24 h-24 rounded-2xl object-cover ring-2 ring-border"
               />
             </div>
-
             <div className="flex-1">
-              <h3 className="font-semibold mb-2">Profile Picture</h3>
+              <h3 className="font-heading font-semibold text-foreground mb-2">Profile Picture</h3>
               <SingleImageUpload
                 defaultImage={avatarUrl}
                 onImageChange={(imageId) => setAvatarUrl(imageId ?? '')}
@@ -106,67 +122,68 @@ function ProfileSettings() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Username</label>
+          <div className="h-px bg-border" />
+
+          {/* Username */}
+          <FieldGroup label="Username">
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm w-full"
               placeholder="Enter your username"
             />
-          </div>
+          </FieldGroup>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Full Name</label>
+          {/* Full name */}
+          <FieldGroup label="Full Name">
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm w-full"
               placeholder="Enter your full name"
             />
-          </div>
+          </FieldGroup>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Bio</label>
+          {/* Bio */}
+          <FieldGroup label="Bio">
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+              className="input-warm w-full min-h-[100px] resize-none"
               placeholder="Tell us about yourself..."
             />
-          </div>
+          </FieldGroup>
 
+          {/* Phone + Birthday */}
           <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Phone Number</label>
+            <FieldGroup label="Phone Number">
               <input
                 type="tel"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm w-full"
                 placeholder="09XX XXX XXXX"
               />
-            </div>
+            </FieldGroup>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Birthday</label>
+            <FieldGroup label="Birthday">
               <input
                 type="date"
                 value={birthday}
                 onChange={(e) => setBirthday(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="input-warm w-full"
               />
-            </div>
+            </FieldGroup>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Gender</label>
+          {/* Gender */}
+          <FieldGroup label="Gender">
             <select
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="input-warm w-full"
             >
               <option value="">Select gender</option>
               <option value="male">Male</option>
@@ -174,52 +191,79 @@ function ProfileSettings() {
               <option value="other">Other</option>
               <option value="prefer-not-to-say">Prefer not to say</option>
             </select>
-          </div>
+          </FieldGroup>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Location</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="City, Province"
-            />
-          </div>
+          {/* Location */}
+          <FieldGroup label="Location">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="input-warm w-full pl-9"
+                placeholder="City, Province"
+              />
+            </div>
+          </FieldGroup>
 
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="isLocationVisible"
-              checked={isLocationVisible}
-              onChange={(e) => setIsLocationVisible(e.target.checked)}
-              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-            />
-            <label htmlFor="isLocationVisible" className="text-sm">
-              Make my location visible to other users
-            </label>
-          </div>
-
-          <div className="border-t pt-6">
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="w-full bg-primary text-primary-foreground px-4 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              <Save className="h-4 w-4" />
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </button>
-
-            {saveMessage && (
-              <p className={`mt-2 text-sm text-center ${
-                saveMessage.includes('success') ? 'text-green-600' : 'text-red-600'
-              }`}>
-                {saveMessage}
-              </p>
+          {/* Location visibility toggle */}
+          <button
+            type="button"
+            onClick={() => setIsLocationVisible(!isLocationVisible)}
+            className="flex items-center gap-3 w-full p-3 rounded-xl bg-foreground/[0.03] hover:bg-foreground/[0.06] border border-border transition-colors"
+          >
+            {isLocationVisible ? (
+              <Eye className="h-4 w-4 text-primary" />
+            ) : (
+              <EyeOff className="h-4 w-4 text-muted-foreground" />
             )}
-          </div>
+            <div className="flex-1 text-left">
+              <p className="text-sm font-medium text-foreground">Nearby search visibility</p>
+              <p className="text-xs text-muted-foreground">
+                {isLocationVisible ? 'You appear in nearby discovery for other users' : 'You are hidden from nearby search results'}
+              </p>
+            </div>
+            <div className={`w-9 h-5 rounded-full transition-colors ${isLocationVisible ? 'bg-primary' : 'bg-border'} relative`}>
+              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${isLocationVisible ? 'translate-x-4' : 'translate-x-0.5'}`} />
+            </div>
+          </button>
+
+          <div className="h-px bg-border" />
+
+          {/* Save button */}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full bg-primary text-primary-foreground px-5 py-3 rounded-xl font-semibold text-sm hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm shadow-primary/20"
+          >
+            {saveMessage.includes('success') ? (
+              <>
+                <Check className="h-4 w-4" />
+                Saved!
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4" />
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </>
+            )}
+          </button>
+
+          {saveMessage && !saveMessage.includes('success') && (
+            <p className="text-sm text-center text-destructive">{saveMessage}</p>
+          )}
         </div>
       </div>
+    </div>
+  )
+}
+
+function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-foreground mb-1.5">{label}</label>
+      {children}
     </div>
   )
 }
