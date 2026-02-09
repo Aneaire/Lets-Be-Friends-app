@@ -108,7 +108,7 @@ export const listPostsNearby = query({
           author.locationLng,
         )
         if (distance > args.radius) return null
-        return { ...post, distance, authorName: author.fullName, authorAvatar: author.avatarUrl }
+        return { ...post, distance, authorName: author.fullName, authorAvatar: author.avatarUrl, authorLat: author.locationLat, authorLng: author.locationLng }
       }),
     )
 
@@ -213,5 +213,34 @@ export const isPostSaved = query({
       .first()
 
     return saved !== null
+  },
+})
+
+export const listSavedPosts = query({
+  args: {
+    userId: v.id('users'),
+  },
+  handler: async (ctx, args) => {
+    const savedPosts = await ctx.db
+      .query('savedPosts')
+      .withIndex('by_user', (q) => q.eq('userId', args.userId))
+      .order('desc')
+      .collect()
+
+    const postsWithDetails = await Promise.all(
+      savedPosts.map(async (saved) => {
+        const post = await ctx.db.get(saved.postId)
+        if (!post) return null
+        const author = await ctx.db.get(post.userId)
+        return {
+          ...post,
+          savedAt: saved.createdAt,
+          authorName: author?.fullName ?? 'Unknown',
+          authorAvatar: author?.avatarUrl,
+        }
+      }),
+    )
+
+    return postsWithDetails.filter((p): p is NonNullable<typeof p> => p !== null)
   },
 })

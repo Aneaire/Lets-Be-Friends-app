@@ -1,5 +1,4 @@
 import { internalMutation } from './_generated/server'
-import { v } from 'convex/values'
 
 export const completeOnboardingForExistingUsers = internalMutation({
   handler: async (ctx) => {

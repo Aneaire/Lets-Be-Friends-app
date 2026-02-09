@@ -104,7 +104,7 @@ export const listServicesNearby = query({
           owner.locationLng,
         )
         if (distance > args.radius) return null
-        return { ...service, distance, ownerName: owner.fullName, ownerAvatar: owner.avatarUrl }
+        return { ...service, distance, ownerName: owner.fullName, ownerAvatar: owner.avatarUrl, ownerLat: owner.locationLat, ownerLng: owner.locationLng }
       }),
     )
 

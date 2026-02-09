@@ -16,7 +16,11 @@ import {
   Compass,
   Navigation,
   Users,
+  Map,
+  List,
 } from 'lucide-react'
+import { NearbyMap } from '../components/NearbyMap'
+import { MapLegend } from '../components/MapLegend'
 
 export const Route = createFileRoute('/discover')({
   component: withOnboardingComplete(Discover),
@@ -53,6 +57,7 @@ function Discover() {
   const [province, setProvince] = useState('')
   const [radius, setRadius] = useState(25)
   const [locationDismissed, setLocationDismissed] = useState(false)
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
 
   const geo = useGeolocation()
   const updateLocation = useMutation(api.users.updateUserLocation)
@@ -197,28 +202,74 @@ function Discover() {
               />
             )}
 
-            {/* Radius Filter */}
+            {/* Radius Filter + View Toggle */}
             {geo.hasLocation && (
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-sm text-muted-foreground font-medium">Radius:</span>
-                {RADIUS_OPTIONS.map((opt) => (
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sm text-muted-foreground font-medium">Radius:</span>
+                  {RADIUS_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setRadius(opt.value)}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                        radius === opt.value
+                          ? 'bg-primary text-white shadow-sm'
+                          : 'bg-muted/15 text-muted-foreground hover:text-foreground hover:bg-muted/25'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-1 p-1 bg-muted/15 rounded-xl">
                   <button
-                    key={opt.value}
-                    onClick={() => setRadius(opt.value)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      radius === opt.value
-                        ? 'bg-primary text-white shadow-sm'
-                        : 'bg-muted/15 text-muted-foreground hover:text-foreground hover:bg-muted/25'
+                    onClick={() => setViewMode('list')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'list'
+                        ? 'bg-white text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
-                    {opt.label}
+                    <List className="w-4 h-4" />
+                    List
                   </button>
-                ))}
+                  <button
+                    onClick={() => setViewMode('map')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'map'
+                        ? 'bg-white text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <Map className="w-4 h-4" />
+                    Map
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Map View */}
+            {geo.hasLocation && viewMode === 'map' && nearbyUsers !== undefined && nearbyPosts !== undefined && nearbyServices !== undefined && (
+              <div className="space-y-4">
+                <NearbyMap
+                  lat={geo.lat!}
+                  lng={geo.lng!}
+                  radius={radius}
+                  users={nearbyUsers}
+                  posts={nearbyPosts}
+                  services={nearbyServices}
+                />
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <MapLegend />
+                  <span className="text-sm text-muted-foreground">
+                    {nearbyUsers.length + nearbyPosts.length + nearbyServices.length} items within {radius} km
+                  </span>
+                </div>
               </div>
             )}
 
             {/* Nearby Users */}
-            {geo.hasLocation && nearbyUsers && nearbyUsers.length > 0 && (
+            {viewMode === 'list' && geo.hasLocation && nearbyUsers && nearbyUsers.length > 0 && (
               <section>
                 <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                   <Users className="h-5 w-5 text-primary" />
@@ -260,7 +311,7 @@ function Discover() {
             )}
 
             {/* Nearby Posts */}
-            {geo.hasLocation && nearbyPosts && nearbyPosts.length > 0 && (
+            {viewMode === 'list' && geo.hasLocation && nearbyPosts && nearbyPosts.length > 0 && (
               <section>
                 <h2 className="font-heading text-xl font-bold mb-4 text-foreground">
                   Posts Nearby ({nearbyPosts.length})
@@ -311,7 +362,7 @@ function Discover() {
             )}
 
             {/* Nearby Services */}
-            {geo.hasLocation && nearbyServices && nearbyServices.length > 0 && (
+            {viewMode === 'list' && geo.hasLocation && nearbyServices && nearbyServices.length > 0 && (
               <section>
                 <h2 className="font-heading text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                   <Briefcase className="h-5 w-5 text-secondary" />
@@ -352,7 +403,7 @@ function Discover() {
             )}
 
             {/* Empty State */}
-            {geo.hasLocation &&
+            {viewMode === 'list' && geo.hasLocation &&
               nearbyUsers !== undefined &&
               nearbyPosts !== undefined &&
               nearbyServices !== undefined &&
@@ -369,7 +420,7 @@ function Discover() {
               )}
 
             {/* Loading State */}
-            {geo.hasLocation && (nearbyUsers === undefined || nearbyPosts === undefined || nearbyServices === undefined) && (
+            {viewMode === 'list' && geo.hasLocation && (nearbyUsers === undefined || nearbyPosts === undefined || nearbyServices === undefined) && (
               <div className="card-warm rounded-2xl p-12 text-center">
                 <div className="w-16 h-16 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-4 animate-pulse">
                   <Navigation className="w-7 h-7 text-primary" />

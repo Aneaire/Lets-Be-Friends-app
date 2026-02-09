@@ -1,4 +1,4 @@
-import { redirect, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAuth } from '@clerk/clerk-react'
 import { useQuery as useConvexQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -7,6 +7,7 @@ import type { ReactNode, ComponentType } from 'react'
 export function withAuth<P extends object>(Component: ComponentType<P>) {
   return function ProtectedComponent(props: P): ReactNode {
     const { isSignedIn, isLoaded } = useAuth()
+    const navigate = useNavigate()
 
     if (!isLoaded) {
       return (
@@ -17,9 +18,8 @@ export function withAuth<P extends object>(Component: ComponentType<P>) {
     }
 
     if (!isSignedIn) {
-      throw redirect({
-        to: '/auth/sign-in',
-      })
+      navigate({ to: '/auth/sign-in' })
+      return null
     }
 
     return <Component {...props} />
@@ -41,9 +41,8 @@ export function withOnboardingComplete<P extends object>(Component: ComponentTyp
     }
 
     if (!isSignedIn) {
-      throw redirect({
-        to: '/auth/sign-in',
-      })
+      navigate({ to: '/auth/sign-in' })
+      return null
     }
 
     if (currentUser?.isOnboardingComplete === false) {
@@ -57,16 +56,9 @@ export function withOnboardingComplete<P extends object>(Component: ComponentTyp
 
 export function useRequireAuth(): void {
   const { isSignedIn, isLoaded } = useAuth()
+  const navigate = useNavigate()
 
-  if (!isLoaded) {
-    throw redirect({
-      to: '/auth/sign-in',
-    })
-  }
-
-  if (!isSignedIn) {
-    throw redirect({
-      to: '/auth/sign-in',
-    })
+  if (!isLoaded || !isSignedIn) {
+    navigate({ to: '/auth/sign-in' })
   }
 }

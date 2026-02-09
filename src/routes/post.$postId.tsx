@@ -122,26 +122,8 @@ function PostDetail() {
               )}
               {post.images.length === 2 && (
                 <div className="grid grid-cols-2">
-                  <img
-                    src={getStorageUrl(post.images[0])}
-                    alt="Post image 1"
-                    className="w-full h-80 object-cover"
-                  />
-                  <img
-                    src={getStorageUrl(post.images[1])}
-                    alt="Post image 2"
-                    className="w-full h-80 object-cover"
-                  />
-                  <img
-                    src={getStorageUrl(post.images[1])}
-                    alt="Post image 2"
-                    className="w-full h-auto max-h-[600px] object-cover"
-                  />
-                  <img
-                    src={`/api/storage/${post.images[1]}`}
-                    alt="Post image 2"
-                    className="w-full h-80 object-cover"
-                  />
+                  <img src={getStorageUrl(post.images[0])} alt="Post image 1" className="w-full h-80 object-cover" />
+                  <img src={getStorageUrl(post.images[1])} alt="Post image 2" className="w-full h-80 object-cover" />
                 </div>
               )}
                {post.images.length >= 3 && (
@@ -440,7 +422,7 @@ interface ReplyItemProps {
 }
 
 function ReplyItem({ reply, onLike }: ReplyItemProps) {
-  const author = useConvexQuery(api.users.getUser, { userId: reply.userId as any })
+  const author = useConvexQuery(api.users.getUserById, { userId: reply.userId as any })
   const { userId: clerkUserId } = useAuth()
   const currentUser = useConvexQuery(api.users.getCurrentUser, { clerkId: clerkUserId ?? '' })
   const isLiked = useConvexQuery(api.comments.isCommentLiked, {

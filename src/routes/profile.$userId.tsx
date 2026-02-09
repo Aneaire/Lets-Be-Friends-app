@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useQuery as useConvexQuery, useMutation as useConvexMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -69,6 +69,8 @@ function Profile() {
 
   const followUser = useConvexMutation(api.follows.followUser)
   const unfollowUser = useConvexMutation(api.follows.unfollowUser)
+  const getOrCreateConversation = useConvexMutation(api.messages.getOrCreateConversation)
+  const router = useRouter()
 
   const isOwnProfile = currentUser?._id === profileUserId
   const isFollowing = isFollowingQuery ?? false
@@ -177,12 +179,19 @@ function Profile() {
                             </>
                           )}
                         </button>
-                        <Link
-                          to="/messages"
+                        <button
+                          onClick={async () => {
+                            if (!currentUser || !profileUserId) return
+                            const conversationId = await getOrCreateConversation({
+                              userId1: currentUser._id,
+                              userId2: profileUserId,
+                            })
+                            router.navigate({ to: '/messages/$conversationId', params: { conversationId: conversationId as string } })
+                          }}
                           className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border transition-all duration-200 active:scale-[0.97]"
                         >
                           <MessageCircle className="h-4 w-4" />
-                        </Link>
+                        </button>
                       </>
                     ) : null}
                   </div>

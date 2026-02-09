@@ -57,19 +57,19 @@ export const listComments = query({
     parentCommentId: v.optional(v.id('comments')),
   },
   handler: async (ctx, args) => {
-    const comments = await ctx.db
+    let query = ctx.db
       .query('comments')
       .withIndex('by_post', (q) =>
         q.eq('postId', args.postId)
       )
-      .filter((q) => {
-        if (args.parentCommentId === undefined) {
-          return q.eq(q.field('parentCommentId'), undefined)
-        }
-        return q.eq(q.field('parentCommentId'), args.parentCommentId)
-      })
-      .collect()
 
+    if (args.parentCommentId !== undefined) {
+      query = query.filter((q) =>
+        q.eq(q.field('parentCommentId'), args.parentCommentId)
+      )
+    }
+
+    const comments = await query.collect()
     return comments
   },
 })

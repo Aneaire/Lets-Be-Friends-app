@@ -2,7 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { useAuth } from '@clerk/clerk-react'
 import { useQuery as useConvexQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
-import { Home, Search, MessageSquare, Bell, User } from 'lucide-react'
+import { Home, Search, Layout, MessageSquare, Bell, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default function Bottombar() {
@@ -13,6 +13,7 @@ export default function Bottombar() {
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Home' },
     { href: '/discover', icon: Search, label: 'Discover' },
+    { href: '/site-builder', icon: Layout, label: 'Site' },
     { href: '/messages', icon: MessageSquare, label: 'Messages' },
     { href: '/notifications', icon: Bell, label: 'Alerts' },
     { href: currentUser?._id ? `/profile/${currentUser._id}` : '/auth/sign-in', icon: User, label: 'Profile' },

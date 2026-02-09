@@ -32,6 +32,7 @@ function Chat() {
   const markAsRead = useConvexMutation(api.messages.markMessagesAsRead)
 
   const otherParticipantId = conversation?.participants.find((id) => id !== currentUser?._id)
+  const otherUser = useConvexQuery(api.users.getUserById, otherParticipantId ? { userId: otherParticipantId as any } : 'skip')
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -95,13 +96,15 @@ function Chat() {
             <ArrowLeft className="h-5 w-5 text-foreground" />
           </Link>
 
-          <div className="w-9 h-9 rounded-xl bg-gradient-pink flex items-center justify-center text-white font-semibold text-xs">
-            {otherParticipantId?.substring(0, 2).toUpperCase() ?? '??'}
-          </div>
+          <img
+            src={otherUser?.avatarUrl || '/profile-placeholder.svg'}
+            alt={otherUser?.fullName ?? 'User'}
+            className="w-9 h-9 rounded-xl object-cover"
+          />
 
           <div className="flex-1">
             <h2 className="font-semibold text-sm text-foreground">
-              {otherParticipantId ? `User ${otherParticipantId.substring(0, 8)}` : 'Unknown'}
+              {otherUser?.fullName || 'Loading...'}
             </h2>
           </div>
 

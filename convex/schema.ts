@@ -183,4 +183,39 @@ export default defineSchema({
     .index('by_name', ['name'])
     .index('by_province', ['province'])
     .index('by_region', ['region']),
+
+  userPlans: defineTable({
+    userId: v.id('users'),
+    plan: v.string(),
+    maxPages: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId']),
+
+  userSites: defineTable({
+    userId: v.id('users'),
+    name: v.string(),
+    description: v.optional(v.string()),
+    isPublished: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId']),
+
+  sitePages: defineTable({
+    siteId: v.id('userSites'),
+    userId: v.id('users'),
+    title: v.string(),
+    slug: v.string(),
+    content: v.string(),
+    pageOrder: v.number(),
+    isHomePage: v.boolean(),
+    isPublished: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_site', ['siteId'])
+    .index('by_user', ['userId'])
+    .index('by_slug', ['siteId', 'slug']),
 })

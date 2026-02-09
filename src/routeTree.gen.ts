@@ -9,7 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SiteBuilderRouteImport } from './routes/site-builder'
+import { Route as SavedRouteImport } from './routes/saved'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CreateServiceRouteImport } from './routes/create-service'
@@ -19,6 +22,7 @@ import { Route as BookingsRouteImport } from './routes/bookings'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as SiteUserIdRouteImport } from './routes/site.$userId'
 import { Route as ServiceServiceIdRouteImport } from './routes/service.$serviceId'
 import { Route as ProfileUserIdRouteImport } from './routes/profile.$userId'
 import { Route as PostPostIdRouteImport } from './routes/post.$postId'
@@ -28,9 +32,24 @@ import { Route as AuthSignInRouteImport } from './routes/auth.sign-in'
 import { Route as ServiceServiceIdEditRouteImport } from './routes/service.$serviceId.edit'
 import { Route as ProfileUserIdSettingsRouteImport } from './routes/profile.$userId.settings'
 
+const SiteBuilderRoute = SiteBuilderRouteImport.update({
+  id: '/site-builder',
+  path: '/site-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRoute = MessagesRouteImport.update({
@@ -76,6 +95,11 @@ const ServicesIndexRoute = ServicesIndexRouteImport.update({
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiteUserIdRoute = SiteUserIdRouteImport.update({
+  id: '/site/$userId',
+  path: '/site/$userId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServiceServiceIdRoute = ServiceServiceIdRouteImport.update({
@@ -127,13 +151,17 @@ export interface FileRoutesByFullPath {
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
   '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/site-builder': typeof SiteBuilderRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
+  '/site/$userId': typeof SiteUserIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
@@ -147,13 +175,17 @@ export interface FileRoutesByTo {
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
   '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/site-builder': typeof SiteBuilderRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
+  '/site/$userId': typeof SiteUserIdRoute
   '/dashboard': typeof DashboardIndexRoute
   '/services': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
@@ -168,13 +200,17 @@ export interface FileRoutesById {
   '/create-service': typeof CreateServiceRoute
   '/discover': typeof DiscoverRoute
   '/messages': typeof MessagesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/onboarding': typeof OnboardingRoute
+  '/saved': typeof SavedRoute
+  '/site-builder': typeof SiteBuilderRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/profile/$userId': typeof ProfileUserIdRouteWithChildren
   '/service/$serviceId': typeof ServiceServiceIdRouteWithChildren
+  '/site/$userId': typeof SiteUserIdRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/profile/$userId/settings': typeof ProfileUserIdSettingsRoute
@@ -190,13 +226,17 @@ export interface FileRouteTypes {
     | '/create-service'
     | '/discover'
     | '/messages'
+    | '/notifications'
     | '/onboarding'
+    | '/saved'
+    | '/site-builder'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/messages/$conversationId'
     | '/post/$postId'
     | '/profile/$userId'
     | '/service/$serviceId'
+    | '/site/$userId'
     | '/dashboard/'
     | '/services/'
     | '/profile/$userId/settings'
@@ -210,13 +250,17 @@ export interface FileRouteTypes {
     | '/create-service'
     | '/discover'
     | '/messages'
+    | '/notifications'
     | '/onboarding'
+    | '/saved'
+    | '/site-builder'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/messages/$conversationId'
     | '/post/$postId'
     | '/profile/$userId'
     | '/service/$serviceId'
+    | '/site/$userId'
     | '/dashboard'
     | '/services'
     | '/profile/$userId/settings'
@@ -230,13 +274,17 @@ export interface FileRouteTypes {
     | '/create-service'
     | '/discover'
     | '/messages'
+    | '/notifications'
     | '/onboarding'
+    | '/saved'
+    | '/site-builder'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/messages/$conversationId'
     | '/post/$postId'
     | '/profile/$userId'
     | '/service/$serviceId'
+    | '/site/$userId'
     | '/dashboard/'
     | '/services/'
     | '/profile/$userId/settings'
@@ -251,23 +299,48 @@ export interface RootRouteChildren {
   CreateServiceRoute: typeof CreateServiceRoute
   DiscoverRoute: typeof DiscoverRoute
   MessagesRoute: typeof MessagesRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
   OnboardingRoute: typeof OnboardingRoute
+  SavedRoute: typeof SavedRoute
+  SiteBuilderRoute: typeof SiteBuilderRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   PostPostIdRoute: typeof PostPostIdRoute
   ProfileUserIdRoute: typeof ProfileUserIdRouteWithChildren
   ServiceServiceIdRoute: typeof ServiceServiceIdRouteWithChildren
+  SiteUserIdRoute: typeof SiteUserIdRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/site-builder': {
+      id: '/site-builder'
+      path: '/site-builder'
+      fullPath: '/site-builder'
+      preLoaderRoute: typeof SiteBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages': {
@@ -331,6 +404,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/site/$userId': {
+      id: '/site/$userId'
+      path: '/site/$userId'
+      fullPath: '/site/$userId'
+      preLoaderRoute: typeof SiteUserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/service/$serviceId': {
@@ -435,12 +515,16 @@ const rootRouteChildren: RootRouteChildren = {
   CreateServiceRoute: CreateServiceRoute,
   DiscoverRoute: DiscoverRoute,
   MessagesRoute: MessagesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
   OnboardingRoute: OnboardingRoute,
+  SavedRoute: SavedRoute,
+  SiteBuilderRoute: SiteBuilderRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   PostPostIdRoute: PostPostIdRoute,
   ProfileUserIdRoute: ProfileUserIdRouteWithChildren,
   ServiceServiceIdRoute: ServiceServiceIdRouteWithChildren,
+  SiteUserIdRoute: SiteUserIdRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }

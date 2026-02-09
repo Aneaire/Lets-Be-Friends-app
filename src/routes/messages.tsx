@@ -61,6 +61,7 @@ function ConversationItem({ conversation, currentUserId }: ConversationItemProps
   const [showActions, setShowActions] = useState(false)
 
   const otherParticipantId = conversation.participants.find((id) => id !== currentUserId)
+  const otherUser = useConvexQuery(api.users.getUserById, otherParticipantId ? { userId: otherParticipantId as any } : 'skip')
   const lastMessageTime = conversation.lastMessageAt
     ? new Date(conversation.lastMessageAt).toLocaleString([], {
         month: 'short',
@@ -78,14 +79,16 @@ function ConversationItem({ conversation, currentUserId }: ConversationItemProps
     >
       <div className="flex items-start justify-between">
         <div className="flex-1 flex items-start gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-xl bg-gradient-pink flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm">
-            {otherParticipantId?.substring(0, 2).toUpperCase() ?? '??'}
-          </div>
+          <img
+            src={otherUser?.avatarUrl || '/profile-placeholder.svg'}
+            alt={otherUser?.fullName ?? 'User'}
+            className="w-11 h-11 rounded-xl object-cover flex-shrink-0"
+          />
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-0.5">
               <h3 className="font-semibold text-sm text-foreground truncate">
-                User {otherParticipantId?.substring(0, 8)}
+                {otherUser?.fullName || 'Loading...'}
               </h3>
               {lastMessageTime && (
                 <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">

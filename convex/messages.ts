@@ -1,6 +1,39 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 
+export const getOrCreateConversation = mutation({
+  args: {
+    userId1: v.id('users'),
+    userId2: v.id('users'),
+  },
+  handler: async (ctx, args) => {
+    // Check for existing conversation between these two users
+    const conversations = await ctx.db.query('conversations').collect()
+
+    const existing = conversations.find((conv) => {
+      const p = conv.participants
+      return (
+        p.length === 2 &&
+        p.includes(args.userId1) &&
+        p.includes(args.userId2)
+      )
+    })
+
+    if (existing) {
+      return existing._id
+    }
+
+    // Create new conversation
+    const conversationId = await ctx.db.insert('conversations', {
+      participants: [args.userId1, args.userId2],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    })
+
+    return conversationId
+  },
+})
+
 export const listConversations = query({
   args: {
     userId: v.id('users'),

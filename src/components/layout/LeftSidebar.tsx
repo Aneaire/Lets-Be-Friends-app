@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Home, Search, Briefcase, MessageSquare, Bell, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, Search, Briefcase, Layout, MessageSquare, Bell, Calendar, Bookmark, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { sidebarStore, toggleSidebar } from '@/store/sidebar'
 import { useStore } from '@tanstack/react-store'
@@ -16,8 +16,10 @@ export default function LeftSidebar() {
     { href: '/dashboard', icon: Home, label: 'Home' },
     { href: '/discover', icon: Search, label: 'Discover' },
     { href: '/services', icon: Briefcase, label: 'Services' },
+    { href: '/site-builder', icon: Layout, label: 'Site Builder' },
     { href: '/bookings', icon: Calendar, label: 'Bookings' },
     { href: '/messages', icon: MessageSquare, label: 'Messages' },
+    { href: '/saved', icon: Bookmark, label: 'Saved' },
     { href: '/notifications', icon: Bell, label: 'Notifications' },
   ]
 

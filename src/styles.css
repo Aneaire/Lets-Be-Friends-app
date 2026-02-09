@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @theme {
   /* LBF Brand — Magenta + Blue on light cream */
@@ -250,3 +251,43 @@ select.input-warm {
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
+
+/* === Leaflet Map Overrides === */
+
+.leaflet-container {
+  z-index: 0;
+  border-radius: 1rem;
+  font-family: "DM Sans", sans-serif;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(30, 17, 40, 0.08), 0 8px 24px rgba(30, 17, 40, 0.06);
+  border: 1px solid #ede4ef;
+  padding: 0;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1e1128;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none;
+  border: 1px solid #ede4ef;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 0.5rem !important;
+  border-color: #ede4ef !important;
+  color: #1e1128 !important;
+}
+
+.leaflet-control-zoom {
+  border-radius: 0.75rem !important;
+  border-color: #ede4ef !important;
+  overflow: hidden;
+}
